@@ -12,4 +12,4 @@ export PATH="~/.local/bin/:$PATH"
 #git clone https://github.com/brussee/SkeletonApp.git
 #cd SkeletonApp
 
-script -c "p4a --force_build --require_perfect_match --allow_download --debug apk" # uses .p4a config file
+script -c "p4a --force-build --require-perfect-match --debug apk" # uses .p4a config file
