@@ -1,7 +1,7 @@
 --name          "Tribler"
 --version       0.1
 --android_api   16
---package       org.tribler
+--package       org.tribler.android
 --private       .
 --arch          armeabi
 --dist_name     testproject
