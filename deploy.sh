@@ -2,6 +2,8 @@
 
 export ADB=/opt/android-sdk-linux/platform-tools/adb
 
+cd dist
+
 #find the first apk
 export APK=$(find -type f -name "*.apk" | head -n1)
 
