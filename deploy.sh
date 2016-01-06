@@ -7,6 +7,9 @@ cd dist
 #find the first apk
 export APK=$(find -type f -name "*.apk" | head -n1)
 
+#fail if no apk is found
+[ -f $APK ] || exit 1
+
 echo Uninstall app
 $ADB uninstall org.tribler.android
 
