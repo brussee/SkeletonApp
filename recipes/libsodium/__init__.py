@@ -3,7 +3,7 @@ from os.path import exists, join
 import sh
 
 class LibsodiumRecipe(Recipe):
-    version = '1.0.3'
+    version = '1.0.8'
     url = 'https://github.com/jedisct1/libsodium/releases/download/{version}/libsodium-{version}.tar.gz'
     depends = ['python2']
 
@@ -15,22 +15,14 @@ class LibsodiumRecipe(Recipe):
         super(LibsodiumRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-
             bash = sh.Command('bash')
-
-            #./configure --host=arm-none-eabi --prefix=/install/path
             shprint(bash, 'configure', '--enable-minimal', '--disable-soname-versions', '--host=arm-linux-androideabi', '--enable-shared', _env=env)
-
             shprint(sh.make, _env=env)
-
             shutil.copyfile('src/libsodium/.libs/libsodium.so', join(self.ctx.get_libs_dir(arch.arch), 'libsodium.so'))
 
     def get_recipe_env(self, arch):
         env = super(LibsodiumRecipe, self).get_recipe_env(arch)
-        #env['LDFLAGS'] += ' --specs=nosys.specs' # only required for the ARM compilation toolchain.
         env['CFLAGS'] += ' -Os'
         return env
 
 recipe = LibsodiumRecipe()
-
-#arm-linux-androideabi-gcc -DANDROID -mandroid -fomit-frame-pointer --sysroot /opt/android-ndk-r10e/platforms/android-16/arch-arm -fno-strict-aliasing -DANDROID -mandroid -fomit-frame-pointer --sysroot /opt/android-ndk-r10e/platforms/android-16/arch-arm -DNO_MALLINFO -DNDEBUG -g  -O3 -Wall -Wstrict-prototypes  -I. -IInclude -I./Include  -fPIC -DPy_BUILD_CORE  -c ./Modules/fcntlmodule.c -o Modules/fcntlmodule.o
