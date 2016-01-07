@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RECIPE=sqlite3
+export RECIPE=libsodium
 
 export ANDROIDSDK=/opt/android-sdk-linux
 export ANDROIDNDK=/opt/android-ndk-r10e
