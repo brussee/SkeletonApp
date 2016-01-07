@@ -23,12 +23,14 @@ class LibsodiumRecipe(Recipe):
 
             shprint(sh.make, _env=env)
 
-            shutil.copyfile('src/libsodium/./libs/libsodium.so', self.ctx.get_libs_dir(arch.arch))
+            shutil.copyfile('src/libsodium/.libs/libsodium.so', join(self.ctx.get_libs_dir(arch.arch), 'libsodium.so'))
 
     def get_recipe_env(self, arch):
         env = super(LibsodiumRecipe, self).get_recipe_env(arch)
-        env['LDFLAGS'] += ' --specs=nosys.specs' # only required for the ARM compilation toolchain.
+        #env['LDFLAGS'] += ' --specs=nosys.specs' # only required for the ARM compilation toolchain.
         env['CFLAGS'] += ' -Os'
         return env
 
 recipe = LibsodiumRecipe()
+
+#arm-linux-androideabi-gcc -DANDROID -mandroid -fomit-frame-pointer --sysroot /opt/android-ndk-r10e/platforms/android-16/arch-arm -fno-strict-aliasing -DANDROID -mandroid -fomit-frame-pointer --sysroot /opt/android-ndk-r10e/platforms/android-16/arch-arm -DNO_MALLINFO -DNDEBUG -g  -O3 -Wall -Wstrict-prototypes  -I. -IInclude -I./Include  -fPIC -DPy_BUILD_CORE  -c ./Modules/fcntlmodule.c -o Modules/fcntlmodule.o
