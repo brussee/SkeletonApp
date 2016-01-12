@@ -11,24 +11,22 @@ class BoostRecipe(Recipe):
     url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_58_0.tar.bz2'
     depends = ['python2']
 
+    def should_build(self, arch):
+        super(BoostRecipe, self).should_build(arch)
+        env = self.get_recipe_env(arch)
+        lib = join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch, 'libgnustl_shared.so')
+        return not exists(lib)
+
     def prebuild_arch(self, arch):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # Export the Boost location to other recipes that want to know where to find Boost
-            env['BOOST_ROOT'] = self.get_build_dir(arch.arch)
-            # Export PYTHON_INSTALL as it is used in user-config
-            env['PYTHON_INSTALL'] = join(self.get_recipe('python2', self.ctx).get_build_dir(arch.arch), 'python-install')
-            # Export hostpython
-            env['HOSTPYTHON'] = join(self.get_recipe('hostpython2', self.ctx).get_build_dir(arch.arch), 'hostpython')
-
             # Make Boost.Build
             bash = sh.Command('bash')
             shprint(bash, 'bootstrap.sh',
-                    '--with-python=' + env['HOSTPYTHON'],
-                    '--with-python-root=' + env['PYTHON_INSTALL'],
-                    '--with-python-version=2.7')
-            # do not pass env!
+                    '--with-python=' + join(self.get_recipe('hostpython2', self.ctx).get_build_dir(arch.arch), 'hostpython'),
+                    '--with-python-root=' + join(self.get_recipe('python2', self.ctx).get_build_dir(arch.arch), 'python-install'),
+                    '--with-python-version=2.7')  # do not pass env!
 
             # Overwrite the user-config
             recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
