@@ -27,8 +27,8 @@ class BoostRecipe(Recipe):
             shprint(bash, 'bootstrap.sh',
                     '--with-python=' + env['HOSTPYTHON'],
                     '--with-python-root=' + env['PYTHON_INSTALL'],
-                    '--with-python-version=2.7',
-                    _env=env)
+                    '--with-python-version=2.7')
+            # do not pass env!
 
             # Overwrite the user-config
             recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
