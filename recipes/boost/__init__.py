@@ -8,7 +8,7 @@ import sh
 class BoostRecipe(Recipe):
     version = '1.58.0'
     # Don't forget to change the URL when changing the version
-    url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_58_0.tar.gz'
+    url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_58_0.tar.bz2'
     depends = ['python2']
 
     def prebuild_arch(self, arch):
@@ -24,11 +24,17 @@ class BoostRecipe(Recipe):
 
             # Make Boost.Build
             bash = sh.Command('bash')
-            shprint(bash, 'bootstrap.sh', '--with-python=' + env['HOSTPYTHON'], '--with-python-root=' + env['PYTHON_INSTALL'], '--with-python-version=2.7')
+            shprint(bash, 'bootstrap.sh',
+                    '--with-python=' + env['HOSTPYTHON'],
+                    '--with-python-root=' + env['PYTHON_INSTALL'],
+                    '--with-python-version=2.7',
+                    _env=env)
+
             # Overwrite the user-config
             recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
             boost_config = join(self.get_build_dir(arch.arch), 'tools/build/src/user-config.jam')
-            shprint(sh.cp, recipe_config, boost_config)
+            shutil.copyfile(recipe_config, boost_config)
+
             # Replace the generated project-config with our own
             shprint(sh.rm, '-f', join(self.get_build_dir(arch.arch), 'project-config.jam*'))
             shprint(sh.cp, join(self.get_recipe_dir(), 'project-config.jam'), self.get_build_dir(arch.arch))
