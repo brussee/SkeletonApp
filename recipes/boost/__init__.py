@@ -13,10 +13,18 @@ class BoostRecipe(Recipe):
 
     def prebuild_arch(self, arch):
         super(BoostRecipe, self).prebuild_arch(arch)
+        env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
+            # Export the Boost location to other recipes that want to know where to find Boost
+            env['BOOST_ROOT'] = self.get_build_dir(arch.arch)
+            # Export PYTHON_INSTALL as it is used in user-config
+            env['PYTHON_INSTALL'] = join(self.get_recipe('python2', self.ctx).get_build_dir(arch.arch), 'python-install')
+            # Export hostpython
+            env['HOSTPYTHON'] = join(self.get_recipe('hostpython2', self.ctx).get_build_dir(arch.arch), 'hostpython')
+
             # Make Boost.Build
             bash = sh.Command('bash')
-            shprint(bash, 'bootstrap.sh', '--with-python=$HOSTPYTHON', '--with-python-root=$BUILD_PATH/python-install', '--with-python-version=2.7')
+            shprint(bash, 'bootstrap.sh', '--with-python=' + env['HOSTPYTHON'], '--with-python-root=' + env['PYTHON_INSTALL'], '--with-python-version=2.7')
             # Overwrite the user-config
             recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
             boost_config = join(self.get_build_dir(arch.arch), 'tools/build/src/user-config.jam')
@@ -24,6 +32,7 @@ class BoostRecipe(Recipe):
             # Replace the generated project-config with our own
             shprint(sh.rm, '-f', join(self.get_build_dir(arch.arch), 'project-config.jam*'))
             shprint(sh.cp, join(self.get_recipe_dir(), 'project-config.jam'), self.get_build_dir(arch.arch))
+
             # Create Android case for library linking when building Boost.Python
             #FIXME: Not idempotent
             shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
@@ -32,19 +41,8 @@ class BoostRecipe(Recipe):
         super(BoostRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            bash = sh.Command('bash')
-
-            # Export the Boost location to other recipes that want to know where to find Boost
-            env['BOOST_ROOT']="' + self.get_build_dir(arch.arch) + '"')
-            # Export PYTHON_INSTALL as it is used in user-config
-            shprint(sh.export, 'PYTHON_INSTALL="$BUILD_PATH/python-install"')
-
             # Copy libgnustl
-            shprint(sh.cp, '$ANDROIDNDK/sources/cxx-stl/gnu-libstdc++/$TOOLCHAIN_VERSION/libs/$ARCH/libgnustl_shared.so', self.ctx.get_libs_dir(arch.arch))
-
-    def postbuild_arch(self, arch):
-        super(BoostRecipe, self).postbuild_arch(arch)
-        shprint(sh.unset, 'BOOST_ROOT')
-        shprint(sh.unset, 'PYTHON_INSTALL')
+            lib = join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch, 'libgnustl_shared.so')
+            shprint(sh.cp, lib, self.ctx.get_libs_dir(arch.arch))
 
 recipe = BoostRecipe()
