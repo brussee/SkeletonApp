@@ -18,16 +18,21 @@ class LibtorrentRecipe(Recipe):
         env = self.get_recipe_env(arch)
         with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
             # Some flags that belong in user-config, but only seem to work if put here
-            linkflags = '--sysroot=' + join(self.ctx.ndk_dir, 'platforms/android-' + env['ANDROIDAPI'], 'arch-arm') + \
+            linkflags = '--sysroot=' + join(self.ctx.ndk_dir, 'platforms/android-' + str(self.ctx.android_api), 'arch-arm') + \
             ' -L' + join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch) + \
             ' -L' + join(self.get_build_dir(arch.arch), 'python-install/lib') + \
             ' -l' + 'python2.7' + ' -l' + 'gnustl_shared'
+
+            # Export PYTHON_INSTALL as it is used in user-config
+            env['PYTHON_INSTALL'] = join(self.get_recipe('python2', self.ctx).get_build_dir(arch.arch), 'python-install')
+            env['BOOST_ROOT'] = self.get_recipe('boost', self.ctx).get_build_dir(arch.arch)
+
             # Build the Python bindings with Boost.Build and some dependencies recursively (libtorrent, Boost.*)
             # Also link to openssl
-            bash = sh.Command('bash')
-            shprint(bash, join(env['BOOST_ROOT'], 'b2'), '-q', 'target-os=android', 'link=static', 'boost-link=static',
+            b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
+            shprint(b2, '-d+2', '-q', 'target-os=android', 'link=static', 'boost-link=static',
                 'boost=source', 'threading=multi', 'toolset=gcc-android', 'geoip=off', 'encryption=tommath',
-                'linkflags="' + linkflags +'"', 'release', _env=env)
+                'linkflags="' + linkflags + '"', 'release', _env=env)
 
             shutil.copyfile('libtorrent.so', join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
 
