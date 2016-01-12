@@ -2,47 +2,33 @@ from pythonforandroid.toolchain import Recipe, shprint, shutil, current_director
 from os.path import exists, join
 import sh
 
-# This recipe only downloads Boost and builds Boost.Build
-# Since Boost by default uses version numbers in the library names, it makes linking to them harder (as Android does not accept version numbers)
-# This is used in the libtorrent recipe and Boost.Build is used to (recursivly) compile Boost from the source here
+# This recipe builds libtorrent with it's Python bindings
+# It depends on Boost.Build and the source of several Boost libraries present in BOOST_ROOT, which is all provided by the boost recipe
 class LibtorrentRecipe(Recipe):
-    version = '1.58.0'
-    # Don't forget to change the URL when changing the version
-    url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_58_0.tar.gz'
-    depends = ['python2']
+    version = '1_0_5'
+    url = 'https://github.com/arvidn/libtorrent/archive/libtorrent-{version}.tar.gz'
+    depends = ['boost', 'python2']
 
-    def prebuild_arch(self, arch):
-        super(LibtorrentRecipe, self).prebuild_arch(arch)
-        env = self.get_recipe_env(arch)
-        with current_directory(self.get_build_dir(arch.arch)):
-            # Export the Boost location to other recipes that want to know where to find Boost
-            env['BOOST_ROOT'] = self.get_build_dir(arch.arch)
-            # Export PYTHON_INSTALL as it is used in user-config
-            env['PYTHON_INSTALL'] = join(self.get_recipe('python2', self.ctx).get_build_dir(arch.arch), 'python-install')
-            # Export hostpython
-            env['HOSTPYTHON'] = join(self.get_recipe('hostpython2', self.ctx).get_build_dir(arch.arch), 'hostpython')
-
-            # Make Boost.Build
-            bash = sh.Command('bash')
-            shprint(bash, 'bootstrap.sh', '--with-python=' + env['HOSTPYTHON'], '--with-python-root=' + env['PYTHON_INSTALL'], '--with-python-version=2.7')
-            # Overwrite the user-config
-            recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
-            boost_config = join(self.get_build_dir(arch.arch), 'tools/build/src/user-config.jam')
-            shprint(sh.cp, recipe_config, boost_config)
-            # Replace the generated project-config with our own
-            shprint(sh.rm, '-f', join(self.get_build_dir(arch.arch), 'project-config.jam*'))
-            shprint(sh.cp, join(self.get_recipe_dir(), 'project-config.jam'), self.get_build_dir(arch.arch))
-
-            # Create Android case for library linking when building Boost.Python
-            #FIXME: Not idempotent
-            shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
+    def should_build(self, arch):
+        super(LibtorrentRecipe, self).should_build(arch)
+        return not exists(join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
 
     def build_arch(self, arch):
         super(LibtorrentRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
-        with current_directory(self.get_build_dir(arch.arch)):
-            # Copy libgnustl
-            lib = join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch, 'libgnustl_shared.so')
-            shprint(sh.cp, lib, self.ctx.get_libs_dir(arch.arch))
+        with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
+            # Some flags that belong in user-config, but only seem to work if put here
+            linkflags = '--sysroot=' + join(self.ctx.ndk_dir, 'platforms/android-' + env['ANDROIDAPI'], 'arch-arm') + \
+            ' -L' + join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch) + \
+            ' -L' + join(self.get_build_dir(arch.arch), 'python-install/lib') + \
+            ' -l' + 'python2.7' + ' -l' + 'gnustl_shared'
+            # Build the Python bindings with Boost.Build and some dependencies recursively (libtorrent, Boost.*)
+            # Also link to openssl
+            bash = sh.Command('bash')
+            shprint(bash, join(env['BOOST_ROOT'], 'b2'), '-q', 'target-os=android', 'link=static', 'boost-link=static',
+                'boost=source', 'threading=multi', 'toolset=gcc-android', 'geoip=off', 'encryption=tommath',
+                'linkflags="' + linkflags +'"', 'release', _env=env)
+
+            shutil.copyfile('libtorrent.so', join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
 
 recipe = LibtorrentRecipe()
