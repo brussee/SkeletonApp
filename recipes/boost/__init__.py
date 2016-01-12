@@ -22,11 +22,11 @@ class BoostRecipe(Recipe):
             boost_config = join(self.get_build_dir(arch.arch), 'tools/build/src/user-config.jam')
             shprint(sh.cp, recipe_config, boost_config)
             # Replace the generated project-config with our own
-            shprint(sh.rm, join(self.get_build_dir(arch.arch), 'project-config.jam*'))
+            shprint(sh.rm, '-f', join(self.get_build_dir(arch.arch), 'project-config.jam*'))
             shprint(sh.cp, join(self.get_recipe_dir(), 'project-config.jam'), self.get_build_dir(arch.arch))
             # Create Android case for library linking when building Boost.Python
             #FIXME: Not idempotent
-            shprint(sh.sed, '-i', '"622i\ \ \ \ \ \ \ \ case * : return ;"', 'tools/build/src/tools/python.jam')
+            shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
 
     def build_arch(self, arch):
         super(BoostRecipe, self).build_arch(arch)
@@ -35,19 +35,16 @@ class BoostRecipe(Recipe):
             bash = sh.Command('bash')
 
             # Export the Boost location to other recipes that want to know where to find Boost
-            shprint(sh.export, 'BOOST_ROOT="' + self.get_build_dir(arch.arch) + '"')
+            env['BOOST_ROOT']="' + self.get_build_dir(arch.arch) + '"')
             # Export PYTHON_INSTALL as it is used in user-config
             shprint(sh.export, 'PYTHON_INSTALL="$BUILD_PATH/python-install"')
 
             # Copy libgnustl
-            shprint(sh.cp, '$ANDROIDNDK/sources/cxx-stl/gnu-libstdc++/$TOOLCHAIN_VERSION/libs/$ARCH/libgnustl_shared.so') $LIBS_PATH
-
-            shprint(sh bash, 'configure', '--enable-minimal', '--disable-soname-versions', '--host=arm-linux-androideabi', '--enable-shared', _env=env)
-            shprint(sh.make, _env=env)
-            shutil.copyfile('src/libsodium/.libs/libsodium.so', join(self.ctx.get_libs_dir(arch.arch), 'libsodium.so'))
+            shprint(sh.cp, '$ANDROIDNDK/sources/cxx-stl/gnu-libstdc++/$TOOLCHAIN_VERSION/libs/$ARCH/libgnustl_shared.so', self.ctx.get_libs_dir(arch.arch))
 
     def postbuild_arch(self, arch):
         super(BoostRecipe, self).postbuild_arch(arch)
-        
+        shprint(sh.unset, 'BOOST_ROOT')
+        shprint(sh.unset, 'PYTHON_INSTALL')
 
 recipe = BoostRecipe()
