@@ -24,8 +24,8 @@ class BoostRecipe(Recipe):
             # Make Boost.Build
             bash = sh.Command('bash')
             shprint(bash, 'bootstrap.sh',
-                    '--with-python=' + join(self.get_recipe('hostpython2', self.ctx).get_build_dir(arch.arch), 'hostpython'),
-                    '--with-python-root=' + join(self.get_recipe('python2', self.ctx).get_build_dir(arch.arch), 'python-install'),
+                    '--with-python=' + join(self.ctx.get_python_install_dir(), 'bin', 'python.host'),
+                    '--with-python-root=' + self.ctx.get_python_install_dir(),
                     '--with-python-version=2.7')  # do not pass env!
 
             # Overwrite the user-config

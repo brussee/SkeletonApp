@@ -23,10 +23,6 @@ class LibtorrentRecipe(Recipe):
             ' -L' + join(self.get_build_dir(arch.arch), 'python-install/lib') + \
             ' -l' + 'python2.7' + ' -l' + 'gnustl_shared'
 
-            # Export PYTHON_INSTALL as it is used in user-config
-            env['PYTHON_INSTALL'] = join(self.get_recipe('python2', self.ctx).get_build_dir(arch.arch), 'python-install')
-            env['BOOST_ROOT'] = self.get_recipe('boost', self.ctx).get_build_dir(arch.arch)
-
             # Build the Python bindings with Boost.Build and some dependencies recursively (libtorrent, Boost.*)
             # Also link to openssl
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
@@ -35,5 +31,13 @@ class LibtorrentRecipe(Recipe):
                 'linkflags="' + linkflags + '"', 'release', _env=env)
 
             shutil.copyfile('libtorrent.so', join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
+
+    def get_recipe_env(self, arch):
+        env = super(LibtorrentRecipe, self).get_recipe_env(arch)
+        # Export PYTHON_INSTALL as it is used in user-config
+        env['PYTHON_INSTALL'] = self.ctx.get_python_install_dir()
+        env['BOOST_ROOT'] = self.get_recipe('boost', self.ctx).get_build_dir(arch.arch)
+        env['LDFLAGS'] = ''
+        return env
 
 recipe = LibtorrentRecipe()
