@@ -5,8 +5,8 @@ import sh
 # This recipe builds libtorrent with it's Python bindings
 # It depends on Boost.Build and the source of several Boost libraries present in BOOST_ROOT, which is all provided by the boost recipe
 class LibtorrentRecipe(Recipe):
-    version = '1_0_5'
-    url = 'https://github.com/arvidn/libtorrent/archive/libtorrent-{version}.tar.gz'
+    version = '1.0.5'
+    url = 'http://kent.dl.sourceforge.net/project/libtorrent/libtorrent/libtorrent-rasterbar-{version}.tar.gz'
     depends = ['boost', 'python2']
 
     def should_build(self, arch):
