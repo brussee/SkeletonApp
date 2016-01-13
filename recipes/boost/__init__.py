@@ -11,12 +11,6 @@ class BoostRecipe(Recipe):
     url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_58_0.tar.bz2'
     depends = ['python2']
 
-    def should_build(self, arch):
-        super(BoostRecipe, self).should_build(arch)
-        env = self.get_recipe_env(arch)
-        lib = join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch, 'libgnustl_shared.so')
-        return not exists(lib)
-
     def prebuild_arch(self, arch):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
