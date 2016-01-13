@@ -15,6 +15,11 @@ class BoostRecipe(Recipe):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
+
+            printenv = sh.Command('printenv')
+            shprint(printenv)
+            print(env)
+
             # Make Boost.Build
             bash = sh.Command('bash')
             shprint(bash, 'bootstrap.sh',

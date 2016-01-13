@@ -23,6 +23,10 @@ class LibtorrentRecipe(Recipe):
             ' -L' + join(self.get_build_dir(arch.arch), 'python-install/lib') + \
             ' -l' + 'python2.7' + ' -l' + 'gnustl_shared'
 
+            printenv = sh.Command('printenv')
+            shprint(printenv)
+            print(env)
+
             # Build the Python bindings with Boost.Build and some dependencies recursively (libtorrent, Boost.*)
             # Also link to openssl
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
