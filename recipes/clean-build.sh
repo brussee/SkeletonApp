@@ -9,7 +9,7 @@ export PATH="~/.local/bin/:$PATH"
 
 
 #bugfix download from sourceforge
-#pip install --user --upgrade git+https://github.com/brussee/python-for-android.git@fix-573
+#pip install --user --upgrade git+https://github.com/kivy/python-for-android.git
 
 #bugfix missing dir
 #mkdir -p /home/paul/.local/lib/python2.7/site-packages/pythonforandroid/bootstraps/empty/build
