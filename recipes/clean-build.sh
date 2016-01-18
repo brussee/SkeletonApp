@@ -16,8 +16,8 @@ export PATH="~/.local/bin/:$PATH"
 
 #bugfix private recipe sources
 #mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/
-#cp ~/repos/SkeletonApp/recipes/boost/project-config.jam /home/paul/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/project-config.jam
-#cp ~/repos/SkeletonApp/recipes/boost/user-config.jam /home/paul/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/user-config.jam
+#cp ~/repos/SkeletonApp/recipes/boost/project-config.jam ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/project-config.jam
+#cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/user-config.jam
 
 
 echo Delete the build files of a recipe
