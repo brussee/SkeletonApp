@@ -6,46 +6,51 @@ import sh
 # Since Boost by default uses version numbers in the library names, it makes linking to them harder (as Android does not accept version numbers)
 # This is used in the libtorrent recipe and Boost.Build is used to (recursivly) compile Boost from the source here
 class BoostRecipe(Recipe):
-    version = '1.58.0'
+    version = '1.60.0'
     # Don't forget to change the URL when changing the version
-    url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_58_0.tar.bz2'
+    url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_60_0.tar.bz2'
     depends = ['python2']
 
     def prebuild_arch(self, arch):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-
-            printenv = sh.Command('printenv')
-            shprint(printenv)
-            print(env)
-
             # Make Boost.Build
             bash = sh.Command('bash')
-            shprint(bash, 'bootstrap.sh',
-                    '--with-python=' + join(self.ctx.get_python_install_dir(), 'bin', 'python.host'),
-                    '--with-python-root=' + self.ctx.get_python_install_dir(),
-                    '--with-python-version=2.7')  # do not pass env!
+            shprint(bash, 'bootstrap.sh')
+            #        '--with-python=' + join(self.ctx.get_python_install_dir(), 'bin', 'python.host'),
+            #        '--with-python-root=' + self.ctx.get_python_install_dir(),
+            #        '--with-python-version=2.7')  # do not pass env!
 
             # Overwrite the user-config
-            recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
-            boost_config = join(self.get_build_dir(arch.arch), 'tools/build/src/user-config.jam')
-            shutil.copyfile(recipe_config, boost_config)
+            #recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
+            #boost_config = join(self.get_build_dir(arch.arch), 'tools/build/src/user-config.jam')
+            #shutil.copyfile(recipe_config, boost_config)
 
             # Replace the generated project-config with our own
-            shprint(sh.rm, '-f', join(self.get_build_dir(arch.arch), 'project-config.jam*'))
-            shprint(sh.cp, join(self.get_recipe_dir(), 'project-config.jam'), self.get_build_dir(arch.arch))
+            #shprint(sh.rm, '-f', join(self.get_build_dir(arch.arch), 'project-config.jam*'))
+            shprint(sh.cp, '/home/brussee/repos/SkeletonApp/recipes/boost/project-config.jam', self.get_build_dir(arch.arch))
 
             # Create Android case for library linking when building Boost.Python
             #FIXME: Not idempotent
-            shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
+            #shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
 
     def build_arch(self, arch):
         super(BoostRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
+            b2 = sh.Command(join(self.get_build_dir(arch.arch), 'b2'))
+            shprint(b2, '-d+2', '-q', 'toolset=gcc-android', 'architecture=arm', 'link=static', 'threading=multi',
+                    '--with-system', '--with-filesystem', '--with-thread',
+                    'install', '--prefix=' + join(self.get_build_dir(arch.arch), 'dist'))
+
             # Copy libgnustl
-            lib = join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch, 'libgnustl_shared.so')
-            shprint(sh.cp, lib, self.ctx.get_libs_dir(arch.arch))
+            #lib = join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch, 'libgnustl_shared.so')
+            #shprint(sh.cp, lib, self.ctx.get_libs_dir(arch.arch))
+
+    def get_recipe_env(self, arch):
+        env = super(BoostRecipe, self).get_recipe_env(arch)
+        print(env)
+        return env
 
 recipe = BoostRecipe()
