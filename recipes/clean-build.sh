@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RECIPE=boost
+export RECIPE=libtorrent
 
 export ANDROIDSDK=/opt/android-sdk-linux
 export ANDROIDNDK=/opt/android-ndk-r10e
@@ -16,7 +16,6 @@ export PATH="~/.local/bin/:$PATH"
 
 #bugfix private recipe sources
 #mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/
-#cp ~/repos/SkeletonApp/recipes/boost/project-config.jam ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/project-config.jam
 #cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/user-config.jam
 
 
