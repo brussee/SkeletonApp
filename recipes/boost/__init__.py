@@ -32,12 +32,11 @@ class BoostRecipe(Recipe):
         with current_directory(self.get_build_dir(arch.arch)):
             # compile Boost.Build engine with this custom toolchain
             bash = sh.Command('bash')
-            shprint(bash, 'bootstrap.sh'
-            #        '--with-python=python.host', #join(env['PYTHON_ROOT'], 'bin', 'python.host')
-            #        '--with-python-version=2.7',
-            #        '--with-python-root=' + env['PYTHON_ROOT']
-            )  # do not pass env!
-
+            shprint(bash, 'bootstrap.sh',
+                    '--with-python=' + join(env['PYTHON_ROOT'], 'bin/python.host'),
+                    '--with-python-version=2.7',
+                    '--with-python-root=' + env['PYTHON_ROOT']
+            ) # do not pass env!
             shprint(sh.cp, '/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', '/home/brussee')
 
     def get_recipe_env(self, arch):
@@ -47,7 +46,7 @@ class BoostRecipe(Recipe):
         env['ARCH'] = arch.arch.replace('eabi', '')
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
         env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
-        print(env)
+        print(env) #debug
         return env
 
 recipe = BoostRecipe()
