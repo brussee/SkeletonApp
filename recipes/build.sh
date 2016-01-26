@@ -17,6 +17,7 @@ export TOOLCHAIN_VERSION=4.9
 export TOOLCHAIN_PREFIX=$CROSSHOME/bin/$CROSSHOST
 
 export PYTHON_ROOT=
+export SITEPACKAGES_PATH=
 
 
 # make custom toolchain
@@ -25,7 +26,7 @@ cd $ANDROIDNDK
 
 # compile Boost.Build engine with this custom toolchain
 cd $BOOST_ROOT
-./bootstrap.sh
+./bootstrap.sh --with-python=python --with-python-version=2.7 --with-python-root=$PYTHON_ROOT
 
 cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~
 
@@ -34,6 +35,8 @@ cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~
 
 
 # compile libtorrent with boost libraries
-cd $LIBTORRENT_ROOT
+cd $LIBTORRENT_ROOT/bindings/python
 
-script -c "../boost_1_60_0/b2 -q toolset=gcc-$ARCH target-os=android threading=multi link=shared boost-link=shared boost=source --prefix=$CROSSHOME install"
+script -c "$BOOST_ROOT/b2 -q toolset=gcc-$ARCH target-os=android threading=multi link=shared boost-link=shared boost=source --prefix=$CROSSHOME release"
+
+#cp -L libtorrent.so $SITEPACKAGES_PATH
