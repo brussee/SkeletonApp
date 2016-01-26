@@ -37,7 +37,7 @@ class BoostRecipe(Recipe):
                     '--with-python-version=2.7',
                     '--with-python-root=' + env['PYTHON_ROOT']
             ) # do not pass env!
-            shprint(sh.cp, '/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', '/home/brussee')
+            shutil.copyfile('/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', '/home/brussee/user-config.jam')
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
