@@ -19,7 +19,7 @@ class BoostRecipe(Recipe):
             bash = sh.Command('bash')
             shprint(bash, join(self.ctx.ndk_dir, 'build/tools/make-standalone-toolchain.sh'),
                     '--ndk-dir=' + self.ctx.ndk_dir,
-                    '--arch=' + arch.arch,
+                    '--arch=' + env['ARCH'],
                     '--platform=android-' + str(self.ctx.android_api),
                     '--toolchain=' + env['CROSSHOST'] + '-' + env['TOOLCHAIN_VERSION'],
                     '--install-dir=' + env['CROSSHOME'],
@@ -43,8 +43,9 @@ class BoostRecipe(Recipe):
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
-        env['CROSSHOST'] = arch.arch + '-linux-androideabi'
-        env['CROSSHOME'] = '/home/brussee/custom-' + arch.arch + '-toolchain'
+        env['ARCH'] = arch.arch.replace('eabi', '')
+        env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
+        env['CROSSHOME'] = '/home/brussee/custom-' + env['ARCH'] + '-toolchain'
         env['BOOST_ROOT'] = '/home/brussee/boost_1_60_0'
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         print(env)
