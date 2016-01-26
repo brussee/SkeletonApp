@@ -32,7 +32,6 @@ class BoostRecipe(Recipe):
         with current_directory(self.get_build_dir(arch.arch)):
             # compile Boost.Build engine with this custom toolchain
             bash = sh.Command('bash')
-            shprint(bash, 'cd', env['BOOST_ROOT'])
             shprint(bash, 'bootstrap.sh'
             #        '--with-python=python.host', #join(env['PYTHON_ROOT'], 'bin', 'python.host')
             #        '--with-python-version=2.7',
