@@ -34,7 +34,7 @@ using gcc : $(ARCH) : $(TOOLCHAIN_PREFIX)-g++ :
 <compileflags>-Werror=format-security
 <compileflags>-Wformat
 <compileflags>-Wno-psabi
-<compileflags>-I$(ANDROIDNDK)/platforms/android-$(ANDROIDAPI)/arch-arm/usr/include
+<compileflags>-I$(ANDROIDNDK)/platforms/android-$(ANDROIDAPI)/arch-$(ARCH)/usr/include
 <compileflags>-I$(ANDROIDNDK)/sources/cxx-stl/gnu-libstdc++/$(TOOLCHAIN_VERSION)/include
 <compileflags>-I$(ANDROIDNDK)/sources/cxx-stl/gnu-libstdc++/$(TOOLCHAIN_VERSION)/libs/$(ARCH)/include
 <compileflags>-I$(PYTHON_ROOT)/include/python2.7

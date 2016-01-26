@@ -38,8 +38,10 @@ class LibtorrentRecipe(Recipe):
         env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['ARCH'] = arch.arch.replace('eabi', '')
+        env['ANDROIDAPI'] = str(self.ctx.android_api)
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
         env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
+        env['TOOLCHAIN_PREFIX'] = join(env['CROSSHOME'], 'bin', env['CROSSHOST'])
         print(env) #debug
         return env
 
