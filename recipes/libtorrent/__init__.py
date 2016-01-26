@@ -34,7 +34,8 @@ class LibtorrentRecipe(Recipe):
 
     def get_recipe_env(self, arch):
         env = super(LibtorrentRecipe, self).get_recipe_env(arch)
-        env['BOOST_ROOT'] = self.get_recipe('boost', self.ctx).get_build_dir(arch.arch)
+        env['BOOST_BUILD_PATH'] = self.get_recipe('boost', self.ctx).get_build_dir(arch.arch)
+        env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['ARCH'] = arch.arch.replace('eabi', '')
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'

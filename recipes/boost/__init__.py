@@ -37,11 +37,12 @@ class BoostRecipe(Recipe):
                     '--with-python-version=2.7',
                     '--with-python-root=' + env['PYTHON_ROOT']
             ) # do not pass env!
-            shutil.copyfile('/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', '/home/brussee/user-config.jam')
+            shutil.copyfile('/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
-        env['BOOST_ROOT'] = self.get_build_dir(arch.arch)
+        env['BOOST_BUILD_PATH'] = self.get_build_dir(arch.arch)
+        env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['ARCH'] = arch.arch.replace('eabi', '')
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
