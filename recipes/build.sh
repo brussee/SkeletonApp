@@ -26,7 +26,7 @@ cd $ANDROIDNDK
 
 # compile Boost.Build engine with this custom toolchain
 cd $BOOST_ROOT
-./bootstrap.sh --with-python=python --with-python-version=2.7 --with-python-root=$PYTHON_ROOT
+./bootstrap.sh #--with-python=python --with-python-version=2.7 --with-python-root=$PYTHON_ROOT
 
 cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~
 
@@ -35,7 +35,7 @@ cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~
 
 
 # compile libtorrent with boost libraries
-cd $LIBTORRENT_ROOT/bindings/python
+cd $LIBTORRENT_ROOT #/bindings/python
 
 script -c "$BOOST_ROOT/b2 -q toolset=gcc-$ARCH target-os=android threading=multi link=shared boost-link=shared boost=source --prefix=$CROSSHOME release"
 
