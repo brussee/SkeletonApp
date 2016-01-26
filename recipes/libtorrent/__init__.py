@@ -32,7 +32,7 @@ class LibtorrentRecipe(Recipe):
                     'release'
             , _env=env)
             # Copy the shared library into the libs folder
-            shutil.copyfile('bin/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libtorrent.so',
+            shutil.copyfile(join(self.get_build_dir(arch.arch), 'bindings/python/bin/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libtorrent.so'),
                             join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
 
     def get_recipe_env(self, arch):
