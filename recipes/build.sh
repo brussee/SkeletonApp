@@ -30,7 +30,7 @@ cd $BOOST_ROOT
 cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~
 
 # compile Boost libraries with Boost.Build
-script -c "./b2 -q toolset=gcc-$ARCH target-os=android threading=multi link=shared runtime-link=shared --with-system --with-filesystem --with-thread --with-date_time --prefix=$CROSSHOME install"
+#script -c "./b2 -q toolset=gcc-$ARCH target-os=android threading=multi link=shared runtime-link=shared --with-system --with-filesystem --with-thread --with-date_time --prefix=$CROSSHOME install"
 
 
 # compile libtorrent with boost libraries
