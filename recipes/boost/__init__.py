@@ -31,8 +31,8 @@ class BoostRecipe(Recipe):
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
             # compile Boost.Build engine with this custom toolchain
-            shprint(sh.cd, env['BOOST_ROOT'])
             bash = sh.Command('bash')
+            shprint(bash, 'cd', env['BOOST_ROOT'])
             shprint(bash, 'bootstrap.sh'
             #        '--with-python=python.host', #join(env['PYTHON_ROOT'], 'bin', 'python.host')
             #        '--with-python-version=2.7',
@@ -43,11 +43,11 @@ class BoostRecipe(Recipe):
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
+        env['BOOST_ROOT'] = self.get_build_dir(arch.arch)
+        env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['ARCH'] = arch.arch.replace('eabi', '')
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
-        env['CROSSHOME'] = '/home/brussee/custom-' + env['ARCH'] + '-toolchain'
-        env['BOOST_ROOT'] = '/home/brussee/boost_1_60_0'
-        env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
+        env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
         print(env)
         return env
 
