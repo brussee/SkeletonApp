@@ -31,7 +31,13 @@ class LibtorrentRecipe(Recipe):
                     '--prefix=' + env['CROSSHOME'],
                     'release'
             , _env=env)
-            # Copy the shared library into the libs folder
+            # Copy the shared libraries into the libs folder
+            shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/python/build/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libboost_python.so.1.60.0'),
+                            join(self.ctx.get_libs_dir(arch.arch), 'libboost_python.so.1.60.0'))
+            shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/system/build/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libboost_system.so.1.60.0'),
+                            join(self.ctx.get_libs_dir(arch.arch), 'libboost_system.so.1.60.0'))
+            shutil.copyfile(join(self.get_build_dir(arch.arch), 'bin/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libtorrent.so.1.0.8'),
+                            join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so.1.0.8'))
             shutil.copyfile(join(self.get_build_dir(arch.arch), 'bindings/python/bin/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libtorrent.so'),
                             join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
 
@@ -45,7 +51,7 @@ class LibtorrentRecipe(Recipe):
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
         env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
         env['TOOLCHAIN_PREFIX'] = join(env['CROSSHOME'], 'bin', env['CROSSHOST'])
-        print(env) #debug
+        print(env)  #debug
         return env
 
 recipe = LibtorrentRecipe()

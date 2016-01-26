@@ -35,7 +35,7 @@ class BoostRecipe(Recipe):
                     '--with-python=' + join(env['PYTHON_ROOT'], 'bin/python.host'),
                     '--with-python-version=2.7',
                     '--with-python-root=' + env['PYTHON_ROOT']
-            ) # do not pass env!
+            )  # Do not pass env
             shutil.copyfile('/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
             # Create Android case for library linking when building Boost.Python
             # FIXME: Not idempotent
@@ -52,7 +52,7 @@ class BoostRecipe(Recipe):
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
         env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
         env['TOOLCHAIN_PREFIX'] = join(env['CROSSHOME'], 'bin', env['CROSSHOST'])
-        print(env) #debug
+        print(env)  #debug
         return env
 
 recipe = BoostRecipe()
