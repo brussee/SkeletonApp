@@ -2,9 +2,8 @@ from pythonforandroid.toolchain import Recipe, shprint, shutil, current_director
 from os.path import exists, join
 import sh
 
-# This recipe only downloads Boost and builds Boost.Build
-# Since Boost by default uses version numbers in the library names, it makes linking to them harder (as Android does not accept version numbers)
-# This is used in the libtorrent recipe and Boost.Build is used to (recursivly) compile Boost from the source here
+# This recipe creates a custom toolchain and bootstraps Boost from source to build Boost.Build
+# including python bindings
 class BoostRecipe(Recipe):
     version = '1.60.0'
     # Don't forget to change the URL when changing the version
@@ -15,7 +14,7 @@ class BoostRecipe(Recipe):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # make custom toolchain
+            # Make custom toolchain
             bash = sh.Command('bash')
             shprint(bash, join(self.ctx.ndk_dir, 'build/tools/make-standalone-toolchain.sh'),
                     '--ndk-dir=' + self.ctx.ndk_dir,
@@ -30,7 +29,7 @@ class BoostRecipe(Recipe):
         super(BoostRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # compile Boost.Build engine with this custom toolchain
+            # Compile Boost.Build engine with this custom toolchain
             bash = sh.Command('bash')
             shprint(bash, 'bootstrap.sh',
                     '--with-python=' + join(env['PYTHON_ROOT'], 'bin/python.host'),
@@ -38,11 +37,14 @@ class BoostRecipe(Recipe):
                     '--with-python-root=' + env['PYTHON_ROOT']
             ) # do not pass env!
             shutil.copyfile('/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
+            # Create Android case for library linking when building Boost.Python
+            # FIXME: Not idempotent
+            shprint(sh.sed, '-i', '622i        case android : return ;', 'tools/build/src/tools/python.jam')
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
-        env['BOOST_BUILD_PATH'] = self.get_build_dir(arch.arch)
-        env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']
+        env['BOOST_BUILD_PATH'] = self.get_build_dir(arch.arch)  # find user-config.jam
+        env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']  # find boost source
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['ARCH'] = arch.arch.replace('eabi', '')
         env['ANDROIDAPI'] = str(self.ctx.android_api)
