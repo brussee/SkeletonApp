@@ -39,7 +39,7 @@ class BoostRecipe(Recipe):
             shutil.copyfile('/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
             # Create Android case for library linking when building Boost.Python
             # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '622i        case android : return ;', 'tools/build/src/tools/python.jam')
+            shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case android : return ;', 'tools/build/src/tools/python.jam')
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
