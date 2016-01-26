@@ -15,41 +15,38 @@ class BoostRecipe(Recipe):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # Make Boost.Build
+            # make custom toolchain
             bash = sh.Command('bash')
-            shprint(bash, 'bootstrap.sh')
-            #        '--with-python=' + join(self.ctx.get_python_install_dir(), 'bin', 'python.host'),
-            #        '--with-python-root=' + self.ctx.get_python_install_dir(),
-            #        '--with-python-version=2.7')  # do not pass env!
-
-            # Overwrite the user-config
-            #recipe_config = join(self.get_recipe_dir(), 'user-config.jam')
-            #boost_config = join(self.get_build_dir(arch.arch), 'tools/build/src/user-config.jam')
-            #shutil.copyfile(recipe_config, boost_config)
-
-            # Replace the generated project-config with our own
-            #shprint(sh.rm, '-f', join(self.get_build_dir(arch.arch), 'project-config.jam*'))
-            shprint(sh.cp, '/home/brussee/repos/SkeletonApp/recipes/boost/project-config.jam', self.get_build_dir(arch.arch))
-
-            # Create Android case for library linking when building Boost.Python
-            #FIXME: Not idempotent
-            #shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
+            shprint(bash, join(self.ctx.ndk_dir, 'build/tools/make-standalone-toolchain.sh'),
+                    '--ndk-dir=' + self.ctx.ndk_dir,
+                    '--arch=' + arch.arch,
+                    '--platform=android-' + str(self.ctx.android_api),
+                    '--toolchain=' + env['CROSSHOST'] + '-' + env['TOOLCHAIN_VERSION'],
+                    '--install-dir=' + env['CROSSHOME'],
+                    '--system=' + 'linux-x86_64'
+            )
 
     def build_arch(self, arch):
         super(BoostRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            b2 = sh.Command(join(self.get_build_dir(arch.arch), 'b2'))
-            shprint(b2, '-d+2', '-q', 'toolset=gcc-android', 'architecture=arm', 'link=static', 'threading=multi',
-                    '--with-system', '--with-filesystem', '--with-thread',
-                    'install', '--prefix=' + join(self.get_build_dir(arch.arch), 'dist'))
+            # compile Boost.Build engine with this custom toolchain
+            shprint(sh.cd, env['BOOST_ROOT'])
+            bash = sh.Command('bash')
+            shprint(bash, 'bootstrap.sh'
+            #        '--with-python=python.host', #join(env['PYTHON_ROOT'], 'bin', 'python.host')
+            #        '--with-python-version=2.7',
+            #        '--with-python-root=' + env['PYTHON_ROOT']
+            )  # do not pass env!
 
-            # Copy libgnustl
-            #lib = join(self.ctx.ndk_dir, 'sources/cxx-stl/gnu-libstdc++', env['TOOLCHAIN_VERSION'], 'libs', arch.arch, 'libgnustl_shared.so')
-            #shprint(sh.cp, lib, self.ctx.get_libs_dir(arch.arch))
+            shprint(sh.cp, '/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', '/home/brussee')
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
+        env['CROSSHOST'] = arch.arch + '-linux-androideabi'
+        env['CROSSHOME'] = '/home/brussee/custom-' + arch.arch + '-toolchain'
+        env['BOOST_ROOT'] = '/home/brussee/boost_1_60_0'
+        env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         print(env)
         return env
 
