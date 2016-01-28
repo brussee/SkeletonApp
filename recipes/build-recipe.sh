@@ -9,14 +9,14 @@ export PATH="~/.local/bin/:$PATH"
 
 
 #bugfix download from sourceforge
-#pip install --user --upgrade git+https://github.com/kivy/python-for-android.git
+pip install --user --upgrade git+https://github.com/kivy/python-for-android.git
 
 #bugfix missing dir
-#mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/bootstraps/empty/build
+mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/bootstraps/empty/build
 
 #bugfix local recipe sources
-#mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/NAME
-#cp ~/repos/SkeletonApp/recipes/NAME/FILE ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/NAME/FILE
+mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost
+cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/user-config.jam
 
 
 echo Delete the build files of a recipe
