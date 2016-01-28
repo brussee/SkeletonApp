@@ -1,18 +1,15 @@
 from pythonforandroid.toolchain import Recipe, shprint, shutil, current_directory
-from os.path import exists, join
+from os.path import join
 import sh
 
 # This recipe builds libtorrent with Python bindings
 # It depends on Boost.Build and the source of several Boost libraries present in BOOST_ROOT,
 # which is all provided by the boost recipe
 class LibtorrentRecipe(Recipe):
-    version = '1_0_8'
-    url = 'http://github.com/arvidn/libtorrent/archive/libtorrent-{version}.tar.gz'
+    version = '1.0.8'
+    # Don't forget to change the URL when changing the version
+    url = 'http://github.com/arvidn/libtorrent/archive/libtorrent-1_0_8.tar.gz'
     depends = ['boost', 'python2']
-
-    def should_build(self, arch):
-        super(LibtorrentRecipe, self).should_build(arch)
-        return not exists(join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
 
     def build_arch(self, arch):
         super(LibtorrentRecipe, self).build_arch(arch)
@@ -31,15 +28,18 @@ class LibtorrentRecipe(Recipe):
                     '--prefix=' + env['CROSSHOME'],
                     'release'
             , _env=env)
-            # Copy the shared libraries into the libs folder
-            shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/python/build/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libboost_python.so.1.60.0'),
-                            join(self.ctx.get_libs_dir(arch.arch), 'libboost_python.so.1.60.0'))
-            shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/system/build/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libboost_system.so.1.60.0'),
-                            join(self.ctx.get_libs_dir(arch.arch), 'libboost_system.so.1.60.0'))
-            shutil.copyfile(join(self.get_build_dir(arch.arch), 'bin/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libtorrent.so.1.0.8'),
-                            join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so.1.0.8'))
-            shutil.copyfile(join(self.get_build_dir(arch.arch), 'bindings/python/bin/gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden/libtorrent.so'),
-                            join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
+
+        # Copy the shared libraries into the libs folder
+        build_subdirs = 'gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden'
+        boost_version = self.get_recipe('boost', self.ctx).version
+        shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/python/build', build_subdirs, 'libboost_python.so.', boost_version),
+                        join(self.ctx.get_libs_dir(arch.arch), 'libboost_python.so.', boost_version))
+        shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/system/build', build_subdirs, 'libboost_system.so.', boost_version),
+                        join(self.ctx.get_libs_dir(arch.arch), 'libboost_system.so.', boost_version))
+        shutil.copyfile(join(self.get_build_dir(arch.arch), 'bin', build_subdirs, 'libtorrent.so.', self.version),
+                        join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so.'), self.version)
+        shutil.copyfile(join(self.get_build_dir(arch.arch), 'bindings/python/bin', build_subdirs, 'libtorrent.so'),
+                        join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
 
     def get_recipe_env(self, arch):
         env = super(LibtorrentRecipe, self).get_recipe_env(arch)
