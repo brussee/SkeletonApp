@@ -50,7 +50,6 @@ class LibtorrentRecipe(Recipe):
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
         env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
         env['TOOLCHAIN_PREFIX'] = join(env['CROSSHOME'], 'bin', env['CROSSHOST'])
-        print(env)  #debug
         return env
 
 recipe = LibtorrentRecipe()

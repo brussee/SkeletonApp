@@ -41,7 +41,6 @@ class BoostRecipe(Recipe):
             # Create Android case for library linking when building Boost.Python
             # FIXME: Not idempotent
             shprint(sh.sed, '-i', '649i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
-            #shprint(sh.sed, '-i', '622i\ \ \ \ \ \ \ \ case android : return ;', 'tools/build/src/tools/python.jam')
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
@@ -53,7 +52,6 @@ class BoostRecipe(Recipe):
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
         env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
         env['TOOLCHAIN_PREFIX'] = join(env['CROSSHOME'], 'bin', env['CROSSHOST'])
-        print(env)  #debug
         return env
 
 recipe = BoostRecipe()
