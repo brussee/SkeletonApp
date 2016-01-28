@@ -15,7 +15,7 @@ class BoostRecipe(Recipe):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            (sysname, nodename, release, version, machine) = os.uname
+            (sysname, nodename, release, version, machine) = os.uname()
             # Make custom toolchain
             bash = sh.Command('bash')
             shprint(bash, join(self.ctx.ndk_dir, 'build/tools/make-standalone-toolchain.sh'),
@@ -38,7 +38,7 @@ class BoostRecipe(Recipe):
                     '--with-python-version=2.7',
                     '--with-python-root=' + env['PYTHON_ROOT']
             )  # Do not pass env
-            shutil.copyfile('/home/brussee/repos/SkeletonApp/recipes/boost/user-config.jam', join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
+            shutil.copyfile(join(self.get_recipe().recipe_dir, 'user-config.jam'), join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
             # Create Android case for library linking when building Boost.Python
             # FIXME: Not idempotent
             shprint(sh.sed, '-i', '649i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
