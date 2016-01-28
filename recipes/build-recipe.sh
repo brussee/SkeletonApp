@@ -8,8 +8,7 @@ export ANDROIDNDK=/opt/android-ndk-r10e
 export PATH="~/.local/bin/:$PATH"
 
 
-#bugfix download from sourceforge
-pip install --user --upgrade git+https://github.com/kivy/python-for-android.git
+#pip install --user --upgrade git+https://github.com/kivy/python-for-android.git
 
 #bugfix missing dir
 mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/bootstraps/empty/build
