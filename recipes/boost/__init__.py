@@ -14,7 +14,6 @@ class BoostRecipe(Recipe):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            (sysname, nodename, release, version, machine) = os.uname()
             # Make custom toolchain
             bash = sh.Command('bash')
             shprint(bash, join(self.ctx.ndk_dir, 'build/tools/make-standalone-toolchain.sh'),
