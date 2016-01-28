@@ -1,6 +1,5 @@
 from pythonforandroid.toolchain import Recipe, shprint, shutil, current_directory
 from os.path import join
-import os
 import sh
 
 # This recipe creates a custom toolchain and bootstraps Boost from source to build Boost.Build
@@ -24,7 +23,7 @@ class BoostRecipe(Recipe):
                     '--platform=android-' + str(self.ctx.android_api),
                     '--toolchain=' + env['CROSSHOST'] + '-' + env['TOOLCHAIN_VERSION'],
                     '--install-dir=' + env['CROSSHOME'],
-                    '--system=' + sysname + '-' + machine
+                    '--system=' + 'linux-x64_64'
             )
 
     def build_arch(self, arch):
