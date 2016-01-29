@@ -38,6 +38,9 @@ class BoostRecipe(Recipe):
             )  # Do not pass env
             shutil.copyfile(join(self.get_recipe_dir(), 'user-config.jam'),
                             join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
+            # Disable versioning of shared object files
+            # FIXME: Not idempotent
+            shprint(sh.sed, '-i', '156i\ \ \ \ \ \ \ \ \ \ false &&', 'boostcpp.jam')
             # Create Android case for library linking when building Boost.Python
             # FIXME: Not idempotent
             shprint(sh.sed, '-i', '649i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
