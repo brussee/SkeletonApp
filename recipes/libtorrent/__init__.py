@@ -15,12 +15,12 @@ class LibtorrentRecipe(Recipe):
         super(LibtorrentRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
-            # Add filesystem dependency
-            # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '203i\	\	\	result += <library>/boost/filesystem//boost_filesystem/<link>shared ;', '../../Jamfile')
             # Disable versioning of shared object file
             # FIXME: Not idempotent
             shprint(sh.sed, '-i', '328i\	\	return $(name) ;', '../../Jamfile')
+            # Add additional filesystem dependency
+            # FIXME: Not idempotent
+            shprint(sh.sed, '-i', '203i\	\	\	result += <library>/boost/filesystem//boost_filesystem/<link>shared ;', '../../Jamfile')
             # Compile libtorrent with boost libraries and python bindings
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,
