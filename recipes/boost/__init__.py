@@ -40,7 +40,7 @@ class BoostRecipe(Recipe):
                             join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
             # Disable versioning of shared object files
             # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '156i\ \ \ \ \ \ \ \ \ \ false &&', 'boostcpp.jam')
+            shprint(sh.sed, '-i', '159i\ \ \ \ \ \ \ \ return $(result) ;', 'boostcpp.jam')
             # Create Android case for library linking when building Boost.Python
             # FIXME: Not idempotent
             shprint(sh.sed, '-i', '649i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
