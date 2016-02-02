@@ -31,7 +31,7 @@ class LibtorrentRecipe(Recipe):
                     'link=shared',
                     'boost-link=shared',
                     'boost=source',
-                    'encryption=openssl',
+            #        'encryption=openssl',
                     '--prefix=' + env['CROSSHOME'],
                     'release'
             , _env=env)
