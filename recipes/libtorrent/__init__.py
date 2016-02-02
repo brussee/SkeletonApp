@@ -15,6 +15,12 @@ class LibtorrentRecipe(Recipe):
         super(LibtorrentRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
+            # Add filesystem dependency
+            # FIXME: Not idempotent
+            shprint(sh.sed, '-i', '203i\	\	\	result += <library>/boost/filesystem//boost_filesystem/<link>shared ;', '../../Jamfile')
+            # Disable versioning of shared object file
+            # FIXME: Not idempotent
+            shprint(sh.sed, '-i', '328i\	\	return $(name) ;', '../../Jamfile')
             # Compile libtorrent with boost libraries and python bindings
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,
@@ -25,6 +31,7 @@ class LibtorrentRecipe(Recipe):
                     'link=shared',
                     'boost-link=shared',
                     'boost=source',
+                    'encryption=openssl',
                     '--prefix=' + env['CROSSHOME'],
                     'release'
             , _env=env)
@@ -32,6 +39,8 @@ class LibtorrentRecipe(Recipe):
         build_subdirs = 'gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden'
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/python/build', build_subdirs, 'libboost_python.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_python.so'))
+        shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/filesystem/build', build_subdirs, 'libboost_filesystem.so'),
+                        join(self.ctx.get_libs_dir(arch.arch), 'libboost_filesystem.so'))
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/system/build', build_subdirs, 'libboost_system.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_system.so'))
         shutil.copyfile(join(self.get_build_dir(arch.arch), 'bin', build_subdirs, 'libtorrent.so.' + self.version),
