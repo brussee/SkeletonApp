@@ -20,11 +20,12 @@ class LibtorrentRecipe(Recipe):
             shprint(sh.sed, '-i', '328i\	\	return $(name) ;', '../../Jamfile')
             # Add additional filesystem dependency
             # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '203i\	\	\	result += <library>/boost/filesystem//boost_filesystem/<link>shared ;', '../../Jamfile')
+            #shprint(sh.sed, '-i', '203i\	\	\	result += <library>/boost/filesystem//boost_filesystem/<link>shared ;', '../../Jamfile')
             # Compile libtorrent with boost libraries and python bindings
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,
                     '-q',
+                    '-j8',
                     'toolset=gcc-' + env['ARCH'],
                     'target-os=android',
                     'threading=multi',
@@ -33,14 +34,14 @@ class LibtorrentRecipe(Recipe):
                     'boost=source',
             #        'encryption=openssl',
                     '--prefix=' + env['CROSSHOME'],
-                    'release'
+                    'debug'
             , _env=env)
         # Copy the shared libraries into the libs folder
-        build_subdirs = 'gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden'
+        build_subdirs = 'gcc-arm/debug/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden'
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/python/build', build_subdirs, 'libboost_python.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_python.so'))
-        shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/filesystem/build', build_subdirs, 'libboost_filesystem.so'),
-                        join(self.ctx.get_libs_dir(arch.arch), 'libboost_filesystem.so'))
+        #shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/filesystem/build', build_subdirs, 'libboost_filesystem.so'),
+        #                join(self.ctx.get_libs_dir(arch.arch), 'libboost_filesystem.so'))
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/system/build', build_subdirs, 'libboost_system.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_system.so'))
         shutil.copyfile(join(self.get_build_dir(arch.arch), 'bin', build_subdirs, 'libtorrent.so'),
