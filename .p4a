@@ -1,6 +1,6 @@
 --name          "Tribler"
 --version       0.1
---android_api   16
+--android_api   21
 --package       org.tribler.android
 --private       .
 --arch          armeabi
