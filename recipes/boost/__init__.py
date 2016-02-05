@@ -8,7 +8,7 @@ class BoostRecipe(Recipe):
     version = '1.60.0'
     # Don't forget to change the URL when changing the version
     url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_60_0.tar.bz2'
-    depends = ['python2']
+    #depends = ['python2']
 
     def prebuild_arch(self, arch):
         super(BoostRecipe, self).prebuild_arch(arch)
@@ -31,11 +31,11 @@ class BoostRecipe(Recipe):
         with current_directory(self.get_build_dir(arch.arch)):
             # Compile Boost.Build engine with this custom toolchain
             bash = sh.Command('bash')
-            shprint(bash, 'bootstrap.sh',
-                    '--with-python=' + join(env['PYTHON_ROOT'], 'bin/python.host'),
-                    '--with-python-version=2.7',
-                    '--with-python-root=' + env['PYTHON_ROOT']
-            )  # Do not pass env
+            shprint(bash, 'bootstrap.sh')
+            #        '--with-python=' + join(env['PYTHON_ROOT'], 'bin/python.host'),
+            #        '--with-python-version=2.7',
+            #        '--with-python-root=' + env['PYTHON_ROOT']
+            #)  # Do not pass env
             shutil.copyfile(join(self.get_recipe_dir(), 'user-config.jam'),
                             join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
             # Disable versioning of shared object files
@@ -43,13 +43,13 @@ class BoostRecipe(Recipe):
             shprint(sh.sed, '-i', '159i\ \ \ \ \ \ \ \ return $(result) ;', 'boostcpp.jam')
             # Create Android case for library linking when building Boost.Python
             # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '649i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
+            #shprint(sh.sed, '-i', '649i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
         env['BOOST_BUILD_PATH'] = self.get_build_dir(arch.arch)  # find user-config.jam
         env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']  # find boost source
-        env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
+        #env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['ARCH'] = arch.arch.replace('eabi', '')
         env['ANDROIDAPI'] = str(self.ctx.android_api)
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
