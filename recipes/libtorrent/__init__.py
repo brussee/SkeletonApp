@@ -9,7 +9,7 @@ class LibtorrentRecipe(Recipe):
     version = '1.0.8'
     # Don't forget to change the URL when changing the version
     url = 'http://github.com/arvidn/libtorrent/archive/libtorrent-1_0_8.tar.gz'
-    depends = ['boost', 'python2', 'openssl']
+    depends = ['boost', 'python2'] #'openssl'
 
     def build_arch(self, arch):
         super(LibtorrentRecipe, self).build_arch(arch)
