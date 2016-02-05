@@ -63,13 +63,13 @@ fullscreen = 0
 android.permissions = CAMERA, INTERNET, NFC, READ_EXTERNAL_STORAGE, RECORD_AUDIO, VIBRATE, WRITE_EXTERNAL_STORAGE
 
 # (int) Android API to use
-android.api = 21
+android.api = 16
 
 # (int) Minimum API required (8 = Android 2.2 devices)
-android.minapi = 21
+android.minapi = 16
 
 # (int) Android SDK version to use
-android.sdk = 21
+android.sdk = 23
 
 # (str) Android NDK version to use
 android.ndk = 10e
