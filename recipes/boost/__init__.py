@@ -47,13 +47,14 @@ class BoostRecipe(Recipe):
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
+        #env['OPENSSL_BUILD_PATH'] = self.get_recipe('openssl', self.ctx).get_build_dir(arch.arch)
         env['BOOST_BUILD_PATH'] = self.get_build_dir(arch.arch)  # find user-config.jam
         env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']  # find boost source
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['ARCH'] = arch.arch.replace('eabi', '')
         env['ANDROIDAPI'] = str(self.ctx.android_api)
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
-        env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
+        env['CROSSHOME'] = join(env['BOOST_ROOT'], 'standalone-' + env['ARCH'] + '-toolchain')
         env['TOOLCHAIN_PREFIX'] = join(env['CROSSHOME'], 'bin', env['CROSSHOST'])
         return env
 

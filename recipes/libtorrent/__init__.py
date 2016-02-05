@@ -22,7 +22,7 @@ class LibtorrentRecipe(Recipe):
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,
                     '-q',
-                    '-j8',
+                    '-j5',
                     'toolset=gcc-' + env['ARCH'],
                     'target-os=android',
                     'threading=multi',
@@ -34,7 +34,7 @@ class LibtorrentRecipe(Recipe):
                     'debug'
             , _env=env)
         # Copy the shared libraries into the libs folder
-        build_subdirs = 'gcc-arm/debug/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden'
+        build_subdirs = 'gcc-arm/debug/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden' #encryption-openssl
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/python/build', build_subdirs, 'libboost_python.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_python.so'))
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/system/build', build_subdirs, 'libboost_system.so'),
@@ -44,14 +44,10 @@ class LibtorrentRecipe(Recipe):
 
     def get_recipe_env(self, arch):
         env = super(LibtorrentRecipe, self).get_recipe_env(arch)
-        env['BOOST_BUILD_PATH'] = self.get_recipe('boost', self.ctx).get_build_dir(arch.arch)  # find user-config.jam
-        env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']  # find boost source
-        env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
-        env['ARCH'] = arch.arch.replace('eabi', '')
-        env['ANDROIDAPI'] = str(self.ctx.android_api)
-        env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
-        env['CROSSHOME'] = join(env['BOOST_ROOT'], 'custom-' + env['ARCH'] + '-toolchain')
-        env['TOOLCHAIN_PREFIX'] = join(env['CROSSHOME'], 'bin', env['CROSSHOST'])
+        print(env)
+        # Copy environment from boost recipe
+        env.update(self.get_recipe('boost', self.ctx).get_recipe_env(arch))
+        print(env)
         return env
 
 recipe = LibtorrentRecipe()
