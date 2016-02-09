@@ -1,5 +1,5 @@
 from pythonforandroid.toolchain import Recipe, shprint, shutil, current_directory
-from os.path import join
+from os.path import join, exists
 import sh
 
 # This recipe builds libtorrent with Python bindings
