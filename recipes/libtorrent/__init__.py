@@ -44,7 +44,7 @@ class LibtorrentRecipe(Recipe):
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_system.so'))
         shutil.copyfile(join(self.get_build_dir(arch.arch), 'bin', build_subdirs, 'libtorrent.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
-        shutil.copyfile(join(self.get_build_dir(arch.arch), 'bindings/python/build', build_subdirs, 'libtorrent.so'),
+        shutil.copyfile(join(self.get_build_dir(arch.arch), 'bindings/python/bin', build_subdirs, 'libtorrent.so'),
                         join(self.ctx.get_site_packages_dir(arch.arch), 'libtorrent.so'))
 
     def get_recipe_env(self, arch):
