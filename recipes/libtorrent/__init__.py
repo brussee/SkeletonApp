@@ -10,6 +10,8 @@ class LibtorrentRecipe(Recipe):
     # Don't forget to change the URL when changing the version
     url = 'http://github.com/arvidn/libtorrent/archive/libtorrent-1_0_8.tar.gz'
     depends = ['boost', 'python2'] #'openssl'
+    patches = ['disable-so-version.patch', # Disable version suffix of shared object file
+               'use-soname.patch'] # Link to unversioned soname
 
     def should_build(self, arch):
         return not ( self.has_libs(arch, 'libboost_python.so', 'libboost_system.so', 'libtorrent.so')
@@ -19,10 +21,6 @@ class LibtorrentRecipe(Recipe):
         super(LibtorrentRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
-            # Disable version suffix of shared object file
-            self.apply_patch(join(self.get_recipe_dir(), 'disable-so-version.patch'), arch.arch)
-            # Link to unversioned soname
-            self.apply_patch(join(self.get_recipe_dir(), 'use-soname.patch'), arch.arch)
             # Compile libtorrent with boost libraries and python bindings
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,
