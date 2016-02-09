@@ -9,6 +9,7 @@ class BoostRecipe(Recipe):
     # Don't forget to change the URL when changing the version
     url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_60_0.tar.bz2'
     depends = ['python2']
+    patches = ['disable-so-version.patch', 'use-android-libs.patch']
 
     def should_build(self, arch):
         return not exists(join(self.get_build_dir(arch.arch), 'b2'))
@@ -44,10 +45,6 @@ class BoostRecipe(Recipe):
             )  # Do not pass env
             shutil.copyfile(join(self.get_recipe_dir(), 'user-config.jam'),
                             join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
-            # Disable version suffix of shared object files
-            self.apply_patch(join(self.get_recipe_dir(), 'disable-so-version.patch'), arch.arch)
-            # Create Android case for library linking when building Boost.Python
-            self.apply_patch(join(self.get_recipe_dir(), 'use-android-libs.patch'), arch.arch)
 
     def select_build_arch(self, arch):
         return arch.arch.replace('eabi', '')
