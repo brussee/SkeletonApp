@@ -11,7 +11,7 @@ export PATH="~/.local/bin/:$PATH"
 echo Start build APK
 script -c "p4a --force-build --require-perfect-match --debug apk" # uses .p4a config file
 
-echo Move apk and log to dist dir
-mkdir -p dist
-mv --backup=t --target-directory=dist *.apk
-mv --backup=t --target-directory=dist typescript
+echo Move apk and log to dist dir in home
+mkdir -p ~/dist
+mv --backup=t --target-directory=~/dist *.apk
+mv --backup=t --target-directory=~/dist typescript
