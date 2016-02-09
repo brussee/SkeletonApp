@@ -19,8 +19,10 @@ class LibtorrentRecipe(Recipe):
         super(LibtorrentRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
-            # Disable versioning of shared object file
+            # Disable version suffix of shared object file
             self.apply_patch(join(self.get_recipe_dir(), 'disable-so-version.patch'), arch.arch)
+            # Link to unversioned soname
+            self.apply_patch(join(self.get_recipe_dir(), 'use-soname.patch'), arch.arch)
             # Compile libtorrent with boost libraries and python bindings
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,
