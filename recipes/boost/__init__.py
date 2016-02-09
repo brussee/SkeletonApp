@@ -38,12 +38,13 @@ class BoostRecipe(Recipe):
             )  # Do not pass env
             shutil.copyfile(join(self.get_recipe_dir(), 'user-config.jam'),
                             join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
-            # Disable versioning of shared object files
-            # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '159i\ \ \ \ \ \ \ \ return $(result) ;', 'boostcpp.jam')
+            # Disable version suffix of shared object files
+            self.apply_patch('disable-cpp-so-version.patch', arch.arch)
             # Create Android case for library linking when building Boost.Python
-            # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '649i\ \ \ \ \ \ \ \ case * : return ;', 'tools/build/src/tools/python.jam')
+            self.apply_patch('use-android-libs.patch', arch.arch)
+
+    def select_build_arch(self, arch):
+        return arch.arch.replace('eabi', '')
 
     def get_recipe_env(self, arch):
         env = super(BoostRecipe, self).get_recipe_env(arch)
@@ -51,7 +52,7 @@ class BoostRecipe(Recipe):
         env['BOOST_BUILD_PATH'] = self.get_build_dir(arch.arch)  # find user-config.jam
         env['BOOST_ROOT'] = env['BOOST_BUILD_PATH']  # find boost source
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
-        env['ARCH'] = arch.arch.replace('eabi', '')
+        env['ARCH'] = self.select_build_arch(arch)
         env['ANDROIDAPI'] = str(self.ctx.android_api)
         env['CROSSHOST'] = env['ARCH'] + '-linux-androideabi'
         env['CROSSHOME'] = join(env['BOOST_ROOT'], 'standalone-' + env['ARCH'] + '-toolchain')

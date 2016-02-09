@@ -11,13 +11,15 @@ class LibtorrentRecipe(Recipe):
     url = 'http://github.com/arvidn/libtorrent/archive/libtorrent-1_0_8.tar.gz'
     depends = ['boost', 'python2'] #'openssl'
 
+    def should_build(self, arch):
+        return not self.has_libs(arch, 'libboost_python.so', 'libboost_system.so', 'libtorrent.so') and self.has_package('libtorrent.so')
+
     def build_arch(self, arch):
         super(LibtorrentRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
             # Disable versioning of shared object file
-            # FIXME: Not idempotent
-            shprint(sh.sed, '-i', '328i\	\	return $(name) ;', '../../Jamfile')
+            self.apply_patch('disable-so-version.patch', arch.arch)
             # Compile libtorrent with boost libraries and python bindings
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,
@@ -31,23 +33,23 @@ class LibtorrentRecipe(Recipe):
                     'boost=source',
             #        'encryption=openssl',
                     '--prefix=' + env['CROSSHOME'],
-                    'debug'
+                    'release'
             , _env=env)
         # Copy the shared libraries into the libs folder
-        build_subdirs = 'gcc-arm/debug/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden' #encryption-openssl
+        build_subdirs = 'gcc-arm/release/boost-link-shared/boost-source/libtorrent-python-pic-on/target-os-android/threading-multi/visibility-hidden' #encryption-openssl
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/python/build', build_subdirs, 'libboost_python.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_python.so'))
         shutil.copyfile(join(env['BOOST_BUILD_PATH'], 'bin.v2/libs/system/build', build_subdirs, 'libboost_system.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libboost_system.so'))
         shutil.copyfile(join(self.get_build_dir(arch.arch), 'bin', build_subdirs, 'libtorrent.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libtorrent.so'))
+        shutil.copyfile(join(self.get_build_dir(arch.arch), 'bindings/python/build', build_subdirs, 'libtorrent.so'),
+                        join(self.ctx.get_site_packages_dir(arch.arch), 'libtorrent.so'))
 
     def get_recipe_env(self, arch):
         env = super(LibtorrentRecipe, self).get_recipe_env(arch)
-        print(env)
         # Copy environment from boost recipe
         env.update(self.get_recipe('boost', self.ctx).get_recipe_env(arch))
-        print(env)
         return env
 
 recipe = LibtorrentRecipe()
