@@ -39,9 +39,9 @@ class BoostRecipe(Recipe):
             shutil.copyfile(join(self.get_recipe_dir(), 'user-config.jam'),
                             join(env['BOOST_BUILD_PATH'], 'user-config.jam'))
             # Disable version suffix of shared object files
-            self.apply_patch('disable-cpp-so-version.patch', arch.arch)
+            self.apply_patch(join(self.get_recipe_dir(), 'disable-so-version.patch'), arch.arch)
             # Create Android case for library linking when building Boost.Python
-            self.apply_patch('use-android-libs.patch', arch.arch)
+            self.apply_patch(join(self.get_recipe_dir(), 'use-android-libs.patch'), arch.arch)
 
     def select_build_arch(self, arch):
         return arch.arch.replace('eabi', '')

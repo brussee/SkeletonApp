@@ -12,14 +12,14 @@ class LibtorrentRecipe(Recipe):
     depends = ['boost', 'python2'] #'openssl'
 
     def should_build(self, arch):
-        return not self.has_libs(arch, 'libboost_python.so', 'libboost_system.so', 'libtorrent.so') and self.has_package('libtorrent.so')
+        return not self.has_libs(arch, 'libboost_python.so', 'libboost_system.so', 'libtorrent.so') and self.ctx.has_package('libtorrent.so')
 
     def build_arch(self, arch):
         super(LibtorrentRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(join(self.get_build_dir(arch.arch), 'bindings/python')):
             # Disable versioning of shared object file
-            self.apply_patch('disable-so-version.patch', arch.arch)
+            self.apply_patch(join(self.get_recipe_dir(), 'disable-so-version.patch'), arch.arch)
             # Compile libtorrent with boost libraries and python bindings
             b2 = sh.Command(join(env['BOOST_ROOT'], 'b2'))
             shprint(b2,

@@ -16,7 +16,7 @@ mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/bootstraps/empty/
 #bugfix local recipe sources
 mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost
 cp ~/repos/SkeletonApp/recipes/boost/user-config.jam ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/user-config.jam
-cp ~/repos/SkeletonApp/recipes/boost/disable-cpp-so-version.patch ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/disable-cpp-so-version.patch
+cp ~/repos/SkeletonApp/recipes/boost/disable-so-version.patch ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/disable-so-version.patch
 cp ~/repos/SkeletonApp/recipes/boost/use-android-libs.patch ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/boost/use-android-libs.patch
 cp ~/repos/SkeletonApp/recipes/libtorrent/disable-so-version.patch ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/libtorrent/disable-so-version.patch
 
