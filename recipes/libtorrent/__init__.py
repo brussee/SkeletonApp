@@ -12,7 +12,8 @@ class LibtorrentRecipe(Recipe):
     depends = ['boost', 'python2'] #'openssl'
 
     def should_build(self, arch):
-        return not self.has_libs(arch, 'libboost_python.so', 'libboost_system.so', 'libtorrent.so') and self.ctx.has_package('libtorrent.so')
+        return not ( self.has_libs(arch, 'libboost_python.so', 'libboost_system.so', 'libtorrent.so')
+                     and self.ctx.has_package('libtorrent.so') )
 
     def build_arch(self, arch):
         super(LibtorrentRecipe, self).build_arch(arch)

@@ -10,6 +10,9 @@ class BoostRecipe(Recipe):
     url = 'http://downloads.sourceforge.net/project/boost/boost/{version}/boost_1_60_0.tar.bz2'
     depends = ['python2']
 
+    def should_build(self, arch):
+        return not exists(join(self.get_build_dir(arch.arch), 'b2'))
+
     def prebuild_arch(self, arch):
         super(BoostRecipe, self).prebuild_arch(arch)
         env = self.get_recipe_env(arch)
