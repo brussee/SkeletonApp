@@ -21,6 +21,7 @@ cp ~/repos/SkeletonApp/recipes/boost/use-android-libs.patch ~/.local/lib/python2
 
 mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/libtorrent
 cp ~/repos/SkeletonApp/recipes/libtorrent/disable-so-version.patch ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/libtorrent/disable-so-version.patch
+cp ~/repos/SkeletonApp/recipes/libtorrent/use-soname.patch ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/libtorrent/use-soname.patch
 
 
 echo Delete the build files of a recipe
