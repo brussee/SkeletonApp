@@ -27,6 +27,9 @@ class BoostRecipe(Recipe):
                     '--install-dir=' + env['CROSSHOME'],
                     '--system=' + 'linux-x86_64'
             )
+            # Install app stl
+            shutil.copyfile(join(env['CROSSHOME'], env['CROSSHOST'], 'lib/libgnustl_shared.so'),
+                            join(self.ctx.get_libs_dir(arch.arch), 'libgnustl_shared.so'))
 
     def build_arch(self, arch):
         super(BoostRecipe, self).build_arch(arch)
