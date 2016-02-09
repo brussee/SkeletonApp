@@ -2,7 +2,7 @@
 --version       0.1
 --android_api   16
 --package       org.tribler.android
---private       .
+--private       ./app
 --arch          armeabi
 --dist_name     testproject
 --bootstrap     sdl2
