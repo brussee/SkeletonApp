@@ -7,37 +7,33 @@ class M2CryptoRecipe(PythonRecipe):
     url = 'https://pypi.python.org/packages/source/M/M2Crypto/M2Crypto-{version}.tar.gz'
     #md5sum = '89557730e245294a6cab06de8ad4fb42'
     depends = ['openssl', 'hostpython2', 'python2', 'setuptools']
-    site_packages_name = 'm2crypto'
+    site_packages_name = 'M2Crypto'
     call_hostpython_via_targetpython = False
 
     def build_arch(self, arch):
-        # Call super() late
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
+            # Fix missing build dir
             shprint(sh.mkdir, '-p', 'build/lib.' + 'linux-x86_64' + '-2.7/M2Crypto')
-            #shprint(sh.sed, '-i', '89,89d', 'setup.py')
-            #shprint(sh.sed, '-i', '90i\ \ \ \ \ \ \ \ self.swig_opts.append("-D__armeabi__")', 'setup.py')
-            #shprint(sh.sed, '-i', '92i\ \ \ \ \ \ \ \ self.swig_opts.append("-v")', 'setup.py')
-            hostpython = sh.Command(self.hostpython_location)
             # Build M2Crypto
+            hostpython = sh.Command(self.hostpython_location)
             shprint(hostpython,
                     'setup.py',
                     'build_ext',
-                    '-v',
-                    '-f',
                     '-p' + arch.arch,
                     '-c' + 'unix',
                     '-o' + env['OPENSSL_BUILD_PATH'],
                     '-L' + env['OPENSSL_BUILD_PATH']
             , _env=env)
+        # Install M2Crypto
         super(M2CryptoRecipe, self).build_arch(arch)
 
     def get_recipe_env(self, arch):
         env = super(M2CryptoRecipe, self).get_recipe_env(arch)
         env['OPENSSL_BUILD_PATH'] = self.get_recipe('openssl', self.ctx).get_build_dir(arch.arch)
         env['CFLAGS'] += ' -I' + join(self.ctx.get_python_install_dir(), 'include/python2.7')
-        #env['LDFLAGS'] += ' -lpython2.7'
         env['LDSHARED'] = env['CC'] + ' -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions'
+        #env['LDFLAGS'] += ' -lpython2.7'
         print env
         return env
 
