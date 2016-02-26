@@ -1,194 +1,122 @@
-__version__ = '1.0'
-from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.widget import Widget
-from kivy.core.window import Window
-from kivy.lang import Builder
-from kivy.clock import Clock
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.properties import ObjectProperty, ListProperty
-
-import android
+#Since I ask this of people before using their code samples, anyone can use this under BSD.
 import os
-import io
-import threading
+import M2Crypto
 
-from androidcamera import AndroidCamera
-from homescreen import HomeScreen
-from filewidget import FileWidget
+def empty_callback ():
+ return
+ 
+#------------------------------------------------------------------------------------------------#
 
-import globalvars
+#Seed the random number generator with 1024 random bytes (8192 bits)
+M2Crypto.Rand.rand_seed (os.urandom (1024))
 
-from jnius import autoclass, cast, detach
-from jnius import JavaClass
-from jnius import PythonJavaClass
-from android.runnable import run_on_ui_thread
+#Generate public/private key pair for Alice
+print "Generating a 1024 bit private/public key pair for Alice..."
+#If you don't like the default M2Crypto ASCII "progress" bar it makes when generating keys, you can use:
+# Alice = M2Crypto.RSA.gen_key (1024, 65537, empty_callback)
+#You can change the key size, though key lengths < 1024 are considered insecure
+#The larger the key size the longer it will take to generate the key and the larger the signature will be when signing
+#You should probably leave the public exponent at 65537 (http://en.wikipedia.org/wiki/Rsa#Key_generation_2)
+Alice = M2Crypto.RSA.gen_key (1024, 65537)
 
-Context = autoclass('android.content.Context')
-PythonActivity = autoclass('org.renpy.android.PythonActivity')
-activity = PythonActivity.mActivity
-Intent = autoclass('android.content.Intent')
-Uri = autoclass('android.net.Uri')
-NfcAdapter = autoclass('android.nfc.NfcAdapter')
-File = autoclass('java.io.File')
-CreateNfcBeamUrisCallback = autoclass('org.test.CreateNfcBeamUrisCallback')
-MediaStore = autoclass('android.provider.MediaStore')
-MediaRecorder = autoclass('android.media.MediaRecorder')
-Camera = autoclass('android.hardware.Camera')
-CamCorderProfile = autoclass('android.media.CamcorderProfile')
-TextUtils = autoclass('android.text.TextUtils')
-MediaColumns = autoclass('android.provider.MediaStore$MediaColumns')
+#Save Alice's private key
+#The 'None' tells it to save the private key in an unencrypted format
+#For best security practices, you'd use:
+# Alice.save_key ('Alice-private.pem')
+#That would cause the private key to be saved in an encrypted format
+#Python would ask you to enter a password to use to encrypt the key file
+#For a demo script though it's easier/quicker to just use 'None' :)
+Alice.save_key ('Alice-private.pem', None)
 
-Builder.load_file('main.kv')
-
-class SearchScreen(Screen):
-	#Predefined kivy function that gets called every time the text in the inputfield changes
-	#Calls delayedSearch if the last change was over 0.5 seconds ago
-	def on_txt_input(self):
-		Clock.unschedule(self.delayedSearch, all=True)
-		if(self.ids.searchfield.text == ''):
-			self.ids.fileList.clear_widgets()
-		else:
-			Clock.schedule_once(self.delayedSearch, 0.5)
-	#Currently a filler function that gets called when a search is attempted
-	#currently displays a filewidget with the contents of the search
-	def delayedSearch(self, dt):
-		print "TextSearch"
-		wid = FileWidget()
-		wid.setName(self.ids.searchfield.text)
-		self.ids.fileList.clear_widgets()
-		self.ids.fileList.add_widget(wid)
+#Save Alice's public key
+Alice.save_pub_key ('Alice-public.pem')
 
 
-class CameraWidget(AnchorLayout):
-	passes = 0
+#Generate public/private key pair for Bob
+print "Generating a 1024 bit private/public key pair for Bob..."
+Bob = M2Crypto.RSA.gen_key (1024, 65537)
+Bob.save_key ('Bob-private.pem', None)
+Bob.save_pub_key ('Bob-public.pem')
 
-	def __init__(self, **kwargs):
-		super(CameraWidget, self).__init__(**kwargs)
-		self.bind(size=self.update)
-	#when the size updates, we place the camera widget appropriately
-	#currently only functions after the function has been called three times, as kivy
-	#does some weird stuff with updating the size variable, leading to divisions by zero
-	#needs to be looked into for a more solid fix
-	def update(self, *args):
-		print self.passes
-		print self.size
-		if self.passes == 2:
-			print 'Camera Size Changed to', self.size
-			width_ratio = (self.size[1] * (9./16.0) )  / self.size[0]
-			print width_ratio
-			self._camera = AndroidCamera(size=self.size, size_hint=(width_ratio, 1))
-		        self.add_widget(self._camera)
-			self.unbind(size=self.update)
-		else:
-			self.passes+=1
+#------------------------------------------------------------------------------------------------#
 
-	#Starts Camera
-	def start(self):
-		print 'Start camera'
-		self._camera.start()
+#Alice wants to send a message to Bob, which only Bob will be able to decrypt
+#Step 1, load Bob's public key
+WriteRSA = M2Crypto.RSA.load_pub_key ('Bob-public.pem')
+#Step 2, encrypt the message using that public key
+#Only Bob's private key can decrypt a message encrypted using Bob's public key
+CipherText = WriteRSA.public_encrypt ("This is a secret message that can only be decrypted with Bob's private key", M2Crypto.RSA.pkcs1_oaep_padding)
+#Step 3, print the result
+print "\nAlice's encrypted message to Bob:"
+print CipherText.encode ('base64')
+#Step 4 (optional), sign the message so Bob knows it really was from Alice
+# 1) Generate a signature
+MsgDigest = M2Crypto.EVP.MessageDigest ('sha1')
+MsgDigest.update (CipherText)
 
-	#Stops Camera
-	def stop(self):
-		print 'Stop camera'
-		self._camera.stop()
+Signature = Alice.sign_rsassa_pss (MsgDigest.digest ())
+# 2) Print the result
+print "Alice's signature for this message:"
+print Signature.encode ('base64')
 
-class CamScreen(Screen):
-	#When the screen is entered, we start the camera
-	def on_enter(self):
-		cam = self.ids.camera
-		if cam._camera != None:
-			cam.start()
-	#Upon leaving, the camera is stopped
-	def on_leave(self):
-		cam = self.ids.camera
-		if cam._camera != None:
-			cam.stop()
 
-class Skelly(App):
-	sm = ScreenManager()
-	history = []
-	HomeScr = HomeScreen(name='home')
-	SearchScr = SearchScreen(name='search')
-	CamScr = CamScreen(name='cam')
-	sm.switch_to(HomeScr)
+#Bob wants to read the message he was sent
+#Step 1, load Bob's private key
+ReadRSA = M2Crypto.RSA.load_key ('Bob-private.pem')
+#Step 2, decrypt the message using that private key
+#If you use the wrong private key to try to decrypt the message it generates an exception, so this catches the exception
+try:
+  PlainText = ReadRSA.private_decrypt (CipherText, M2Crypto.RSA.pkcs1_oaep_padding)
+except:
+  print "Error: wrong key?"
+  PlainText = ""
 
-	#Method that request the device's NFC adapter and adds a Callback function to it to activate on an Android Beam Intent.
-	def nfc_init(self):
-		#Request the Activity to obtain the NFC Adapter and later add it to the Callback. 
-		self.j_context = context = activity
-		self.adapter = NfcAdapter.getDefaultAdapter(context)
+if PlainText == "":
+  #Step 3, print the result of the decryption
+  print "Message decrypted by Bob:"
+  print PlainText
+  #Step 4 (optional), verify the message was really sent by Alice
+  # 1) Load Alice's public key
+  VerifyRSA = M2Crypto.RSA.load_pub_key ('Alice-public.pem')
+  #2 ) Verify the signature
+  print "Signature verificaton:"
 
-		#Only activate the NFC functionality if the device supports it.
-		if self.adapter is not None:
-			#global nfcCallback
-			globalvars.nfcCallback = CreateNfcBeamUrisCallback()
-			globalvars.nfcCallback.addContext(context)
-			self.adapter.setBeamPushUrisCallback(globalvars.nfcCallback, context)
+  MsgDigest = M2Crypto.EVP.MessageDigest ('sha1')
+  MsgDigest.update (CipherText)
 
-	def handle_nfc_view(self, beamUri):
-		if not TextUtils.equals(beamUri.getAuthority(), MediaStore.getAuthority()):
-			print 'Wrong content provider for beamed file(s).'
-		else:
-			projection = MediaColumns.DATA
-			pathCursor = Context.getContentResolver().query(beamUri, projection, None, None, None)
+  if VerifyRSA.verify_rsassa_pss (MsgDigest.digest (), Signature) == 1:
+   print "This message was sent by Alice.\n"
+  else:
+   print "This message was NOT sent by Alice!\n"
 
-			if pathCursor is not None and pathCursor.movetoFirst():
-				filenameIndex = pathCursor.getColumnIndex(MediaColumns.DATA)
-				fileName = pathCursor.getString(filenameIndex)
-				copiedFile = File(fileName)
-				return copiedFile.getParentFile()
-			else:
-				return None
+#------------------------------------------------------------------------------------------------#
+ 
+#Generate a signature for a string
+#Use Bob's private key
+SignEVP = M2Crypto.EVP.load_key ('Bob-private.pem')
+#Begin signing
+SignEVP.sign_init ()
+#Tell it to sign our string
+SignEVP.sign_update ('This is an unencrypted string that will be signed by Bob')
+#Get the final result
+StringSignature = SignEVP.sign_final ()
+#Print the final result
+print "Bob's signature for the string:"
+print StringSignature.encode ('base64')
 
-	def build(self):
-		#Android back mapping
-		android.map_key(android.KEYCODE_BACK,1001)
-		win = Window
-		win.bind(on_keyboard=self.key_handler)
-		#globalvars.init()
 
-		self.nfc_init()
-		self.HomeScr.getStoredMedia()
-
-		return self.sm
-
-	#Function that helps properly implement the history function.
-	#use this instead of switch_to
-	def swap_to(self, Screen):
-		self.history.append(self.sm.current_screen)
-		self.sm.switch_to(Screen, direction='left')
-
-	#required function by android, called when paused for multitasking
-	def on_pause(self):
-		return True
-
-	#required function by android, called when asked to stop
-	def on_stop(self):
-		globalvars.app_ending = True
-		print "Terminating Application NOW"
-		self.HomeScr.endThumbnailThread()
-
-	#Required function by android, called when resumed from a pause	
-	def on_resume(self):
-		#forces a refresh of the entire video list
-		self.HomeScr.getStoredMedia()
-
-	#Button handler function
-	#also calls history function in tandem with swap_to()
-	def key_handler(self,window,keycode1, keycode2, text, modifiers):
-		if keycode1 in [27,1001]:
-			self.goBack()
-
-	#History function, quits out of application if no history present
-	def goBack(self):
-		if len(self.history ) != 0:
-			print self.history
-			self.sm.switch_to(self.history.pop(), direction = 'right')				
-		else:
-			App.get_running_app().stop()
-		
-
-if __name__== '__main__':
-	Skelly().run()
+#Verify the string was signed by Bob
+PubKey = M2Crypto.RSA.load_pub_key ('Bob-public.pem')
+#Initialize
+VerifyEVP = M2Crypto.EVP.PKey()
+#Assign the public key to our VerifyEVP
+VerifyEVP.assign_rsa (PubKey)
+#Begin verification
+VerifyEVP.verify_init ()
+#Tell it to verify our string, if this string is not identicial to the one that was signed, it will fail
+VerifyEVP.verify_update ('This is an unencrypted string that will be signed by Bob')
+#Was the string signed by Bob?
+if VerifyEVP.verify_final (StringSignature) == 1:
+ print "The string was successfully verified."
+else:
+ print "The string was NOT verified!"
