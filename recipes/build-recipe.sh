@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RECIPE=m2crypto
+export RECIPE=leveldb
 
 export ANDROIDSDK=/opt/android-sdk-linux
 export ANDROIDNDK=/opt/android-ndk-r10e
