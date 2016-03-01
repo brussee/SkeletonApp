@@ -7,17 +7,23 @@ class SnappyRecipe(Recipe):
     url = 'https://github.com/google/snappy/releases/download/{version}/snappy-{version}.tar.gz'
 
     def should_build(self, arch):
-        return not self.has_libs(arch, 'libsnappy.so')
+        return False
 
     def build_arch(self, arch):
         super(SnappyRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
+            # Configure
+            bash = sh.Command('bash')
+            shprint(bash, 'configure',
+                    '--host=' + self.select_build_arch(arch),
+            _env=env)
             # Build
             shprint(sh.make, _env=env)
+            # Install
+            shprint(sh.make, 'install', _env=env)
 
-    def get_recipe_env(self, arch):
-        env = super(SnappyRecipe, self).get_recipe_env(arch)
-        return env
+    def select_build_arch(self, arch):
+        return arch.arch.replace('eabi', '')
 
 recipe = SnappyRecipe()

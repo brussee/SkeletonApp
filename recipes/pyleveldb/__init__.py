@@ -18,8 +18,6 @@ class PyLevelDBRecipe(PythonRecipe):
             # Copy latest version from leveldb recipe
             sh.cp('-rf', self.get_recipe('leveldb', self.ctx).get_build_dir(arch.arch),
                          self.get_build_dir(arch.arch))
-            #shutil.copyfile(join(self.get_recipe_dir(), 'setup.py'),
-            #                join(self.get_build_dir(arch.arch), 'setup.py'))
             # Build LevelDB python bindings
             hostpython = sh.Command(self.hostpython_location)
             shprint(hostpython,
