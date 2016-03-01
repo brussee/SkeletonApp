@@ -8,8 +8,7 @@ class LevelDBRecipe(Recipe):
     opt_depends = ['snappy']
 
     def should_build(self, arch):
-        return not ( self.has_libs(arch, 'libleveldb.so') )
-                   # and self.ctx.has_package('libleveldb.so', arch.arch) )
+        return not self.has_libs(arch, 'libleveldb.so')
 
     def build_arch(self, arch):
         super(LevelDBRecipe, self).build_arch(arch)
