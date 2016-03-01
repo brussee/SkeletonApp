@@ -6,6 +6,7 @@ class LevelDBRecipe(Recipe):
     version = '1.18'
     url = 'https://github.com/google/leveldb/archive/v{version}.tar.gz'
     opt_depends = ['snappy']
+    patches = ['disable-so-version.patch']
 
     def should_build(self, arch):
         return not self.has_libs(arch, 'libleveldb.so', 'libgnustl_shared.so')
@@ -14,10 +15,6 @@ class LevelDBRecipe(Recipe):
         super(LevelDBRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # Make sure leveldb is compiled for Android and does not include versioned numbers
-            env['TARGET_OS'] = 'OS_ANDROID_CROSSCOMPILE'
-            #FIXME: Not idempotent
-            shprint(sh.sed, '-i', '127i\ \ \ \ \ \ \ \ PLATFORM_SHARED_VERSIONED=', 'build_detect_platform')
             # Build
             shprint(sh.make, _env=env)
             # Copy the shared library
@@ -28,6 +25,7 @@ class LevelDBRecipe(Recipe):
 
     def get_recipe_env(self, arch):
         env = super(LevelDBRecipe, self).get_recipe_env(arch)
+        env['TARGET_OS'] = 'OS_ANDROID_CROSSCOMPILE'  
         env['CFLAGS'] += ' -I' + self.ctx.ndk_dir + '/platforms/android-' + str(self.ctx.android_api) + '/arch-' + arch.arch.replace('eabi', '') + '/usr/include' + \
                          ' -I' + self.ctx.ndk_dir + '/sources/cxx-stl/gnu-libstdc++/' + self.ctx.toolchain_version + '/include' + \
                          ' -I' + self.ctx.ndk_dir + '/sources/cxx-stl/gnu-libstdc++/' + self.ctx.toolchain_version + '/libs/' + arch.arch + '/include'
@@ -35,7 +33,7 @@ class LevelDBRecipe(Recipe):
         env['CXXFLAGS'] += ' -frtti'
         env['CXXFLAGS'] += ' -fexceptions'
         env['LDFLAGS'] += ' -L' + self.ctx.ndk_dir + '/sources/cxx-stl/gnu-libstdc++/' + self.ctx.toolchain_version + '/libs/' + arch.arch + \
-                          ' -lgnustl_shared'
+                          ' -lgnustl_shared'      
         return env
 
 recipe = LevelDBRecipe()
