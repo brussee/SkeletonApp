@@ -13,8 +13,8 @@ export PATH="~/.local/bin/:$PATH"
 #bugfix missing dir
 mkdir -p ~/.local/lib/python2.7/site-packages/pythonforandroid/bootstraps/empty/build
 
-#workaround local recipes patches
-cp -R ~/repos/SkeletonApp/recipes/$RECIPE/ ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes/
+#copy recipes
+cp -R . ~/.local/lib/python2.7/site-packages/pythonforandroid/recipes
 
 
 echo Delete the build files of a recipe
