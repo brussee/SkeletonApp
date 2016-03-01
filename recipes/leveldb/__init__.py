@@ -8,7 +8,7 @@ class LevelDBRecipe(Recipe):
     opt_depends = ['snappy']
 
     def should_build(self, arch):
-        return not self.has_libs(arch, 'libleveldb.so')
+        return not self.has_libs(arch, 'libleveldb.so', 'libgnustl_shared.so')
 
     def build_arch(self, arch):
         super(LevelDBRecipe, self).build_arch(arch)
@@ -22,6 +22,9 @@ class LevelDBRecipe(Recipe):
             shprint(sh.make, _env=env)
             # Copy the shared library
             shutil.copyfile('libleveldb.so', join(self.ctx.get_libs_dir(arch.arch), 'libleveldb.so'))
+            # Copy stl
+            shutil.copyfile(self.ctx.ndk_dir + '/sources/cxx-stl/gnu-libstdc++/' + self.ctx.toolchain_version + '/libs/' + arch.arch + '/libgnustl_shared.so',
+                            join(self.ctx.get_libs_dir(arch.arch), 'libgnustl_shared.so'))
 
     def get_recipe_env(self, arch):
         env = super(LevelDBRecipe, self).get_recipe_env(arch)
