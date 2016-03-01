@@ -4,7 +4,6 @@ db.Put('hello', 'world')
 print db.Get('hello')
 
 db.Delete('hello')
-db.Get('hello')
 
 for i in xrange(10):
   db.Put(str(i), 'string_%s' % i)
@@ -16,3 +15,9 @@ for i in xrange(1000):
   db.Put(str(i), 'string_%s' % i)
 
 db.Write(batch, sync = True)
+
+for i in xrange(1000):
+  print db.Get(str(i))
+
+db.Put('hello', 'world')
+print db.Get('hello')
