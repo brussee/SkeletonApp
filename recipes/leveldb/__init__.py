@@ -17,7 +17,7 @@ class LevelDBRecipe(Recipe):
         super(LevelDBRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            if will_build('snappy'):
+            if 'snappy' in recipe.ctx.recipe_build_order:
                 # Copy latest version from snappy recipe
                 sh.cp('-rf', self.get_recipe('snappy', self.ctx).get_build_dir(arch.arch),
                              self.get_build_dir(arch.arch))
@@ -32,7 +32,7 @@ class LevelDBRecipe(Recipe):
     def get_recipe_env(self, arch):
         env = super(LevelDBRecipe, self).get_recipe_env(arch)
         env['TARGET_OS'] = 'OS_ANDROID_CROSSCOMPILE'
-        if will_build('snappy'):
+        if 'snappy' in recipe.ctx.recipe_build_order:
             env['CFLAGS'] += ' -DSNAPPY' + \
                              ' -I./snappy'
         env['CFLAGS'] += ' -I' + self.ctx.ndk_dir + '/platforms/android-' + str(self.ctx.android_api) + '/arch-' + arch.arch.replace('eabi', '') + '/usr/include' + \
