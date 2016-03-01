@@ -24,10 +24,8 @@ class PyLevelDBRecipe(PythonRecipe):
 
     def get_recipe_env(self, arch):
         env = super(PyLevelDBRecipe, self).get_recipe_env(arch)
-        cc_bak = env['CC'];
         # Copy environment from leveldb recipe
         env.update(self.get_recipe('leveldb', self.ctx).get_recipe_env(arch))
-        env['CC'] = cc_bak
         env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
         env['CFLAGS'] += ' -I' + env['PYTHON_ROOT'] + '/include/python2.7'
         # Set linker to use the correct gcc

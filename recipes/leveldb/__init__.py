@@ -9,7 +9,7 @@ class LevelDBRecipe(Recipe):
 
     def should_build(self, arch):
         return not ( self.has_libs(arch, 'libleveldb.so') )
-                   # and self.ctx.has_package('libtorrent.so', arch.arch) )
+                   # and self.ctx.has_package('libleveldb.so', arch.arch) )
 
     def build_arch(self, arch):
         super(LevelDBRecipe, self).build_arch(arch)
@@ -32,7 +32,6 @@ class LevelDBRecipe(Recipe):
         env['CXXFLAGS'] = env['CFLAGS']
         env['CXXFLAGS'] += ' -frtti'
         env['CXXFLAGS'] += ' -fexceptions'
-        env['LDSHARED'] = env['CC']
         env['LDFLAGS'] += ' -L' + self.ctx.ndk_dir + '/sources/cxx-stl/gnu-libstdc++/' + self.ctx.toolchain_version + '/libs/' + arch.arch + \
                           ' -lgnustl_shared'
         return env
