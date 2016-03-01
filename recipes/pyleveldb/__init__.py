@@ -5,9 +5,9 @@ import sh
 class PyLevelDBRecipe(PythonRecipe):
     version = '0.193'
     url = 'https://pypi.python.org/packages/source/l/leveldb/leveldb-{version}.tar.gz'
-    #md5sum = '2952434f2a0ce10c44f58542cc561589'
     depends = ['leveldb', 'hostpython2', 'python2', 'setuptools']
     call_hostpython_via_targetpython = False
+    patches = ['bindings-only.patch']
 
     def should_build(self, arch):
         return not self.ctx.has_package('leveldb', arch.arch)
@@ -18,10 +18,8 @@ class PyLevelDBRecipe(PythonRecipe):
             # Copy latest version from leveldb recipe
             sh.cp('-rf', self.get_recipe('leveldb', self.ctx).get_build_dir(arch.arch),
                          self.get_build_dir(arch.arch))
-            # Overwrite configuration
-            #TODO make patch file
-            shutil.copyfile(join(self.get_recipe_dir(), 'setup.py'),
-                            join(self.get_build_dir(arch.arch), 'setup.py'))
+            #shutil.copyfile(join(self.get_recipe_dir(), 'setup.py'),
+            #                join(self.get_build_dir(arch.arch), 'setup.py'))
             # Build LevelDB python bindings
             hostpython = sh.Command(self.hostpython_location)
             shprint(hostpython,

@@ -7,14 +7,9 @@
 #
 # See LICENSE for details.
 
-import glob
-import platform
-import sys
-
 from setuptools import setup, Extension
 
-system,node,release,version,machine,processor = platform.uname()
-common_flags = [
+extra_compile_args = [
       '-I./leveldb/include',
       '-I./leveldb',
       '-I./snappy',
@@ -22,14 +17,11 @@ common_flags = [
       '-O2',
       '-fPIC',
       '-DNDEBUG',
-      '-DSNAPPY'
-]
-
-extra_compile_args = common_flags + [
-  '-Wall',
-  '-DLEVELDB_PLATFORM_POSIX',
-  '-D_REENTRANT',
-  '-DOS_ANDROID'
+      '-DSNAPPY',
+      '-Wall',
+      '-DLEVELDB_PLATFORM_POSIX',
+      '-D_REENTRANT',
+      '-DOS_ANDROID',
 ]
 
 setup(
