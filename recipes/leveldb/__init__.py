@@ -1,14 +1,12 @@
 from pythonforandroid.toolchain import Recipe, shprint, shutil, current_directory
-from pythonforandroid.patching import will_build
 from os.path import join, exists
 import sh
-from telnetlib import theNULL
 
 class LevelDBRecipe(Recipe):
     version = '1.18'
     url = 'https://github.com/google/leveldb/archive/v{version}.tar.gz'
     opt_depends = ['snappy']
-    patches = ['disable-so-version.patch', 'build-snappy.patch']
+    patches = ['disable-so-version.patch', 'find-snappy.patch']
 
     def should_build(self, arch):
         return not self.has_libs(arch, 'libleveldb.so', 'libgnustl_shared.so')
@@ -18,7 +16,7 @@ class LevelDBRecipe(Recipe):
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
             if 'snappy' in recipe.ctx.recipe_build_order:
-                # Copy latest version from snappy recipe
+                # Copy source from snappy recipe
                 sh.cp('-rf', self.get_recipe('snappy', self.ctx).get_build_dir(arch.arch),
                              self.get_build_dir(arch.arch))
             # Build
