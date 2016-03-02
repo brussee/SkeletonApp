@@ -6,6 +6,7 @@ class PyLevelDBRecipe(PythonRecipe):
     version = '0.193'
     url = 'https://pypi.python.org/packages/source/l/leveldb/leveldb-{version}.tar.gz'
     depends = ['leveldb', 'hostpython2', 'python2', 'setuptools']
+    opt_depends = ['snappy']
     call_hostpython_via_targetpython = False
     patches = ['bindings-only.patch']
 
@@ -15,11 +16,10 @@ class PyLevelDBRecipe(PythonRecipe):
     def build_arch(self, arch):
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # Overwrite with source from leveldb recipe
-            sh.cp('-rf', self.get_recipe('leveldb', self.ctx).get_build_dir(arch.arch),
-                         self.get_build_dir(arch.arch))
-            # Remove snappy source in this pypi package
-            sh.rm('-rf', './snappy')
+            # Remove source in this pypi package
+            sh.rm('-rf', './leveldb', './leveldb.egg-info', './snappy')
+            # Use source from leveldb recipe
+            sh.ln('-s', self.get_recipe('leveldb', self.ctx).get_build_dir(arch.arch), 'leveldb')
             if 'snappy' in recipe.ctx.recipe_build_order:
                 # Use source from snappy recipe
                 sh.ln('-s', self.get_recipe('snappy', self.ctx).get_build_dir(arch.arch), 'snappy')
