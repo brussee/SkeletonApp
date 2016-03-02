@@ -8,7 +8,7 @@ class SnappyRecipe(Recipe):
 
     def should_build(self, arch):
         # Only download to use in leveldb recipe
-        return False
+        return not 'leveldb' in recipe.ctx.recipe_build_order
 
     def build_arch(self, arch):
         super(SnappyRecipe, self).build_arch(arch)
