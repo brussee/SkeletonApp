@@ -16,8 +16,8 @@ class LevelDBRecipe(Recipe):
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
             if 'snappy' in recipe.ctx.recipe_build_order:
-                # Use source from snappy recipe
-                sh.ln('-s', self.get_recipe('snappy', self.ctx).get_build_dir(arch.arch), 'snappy')
+                # Copy source from snappy recipe
+                sh.cp('-rf', self.get_recipe('snappy', self.ctx).get_build_dir(arch.arch), 'snappy')
             # Build
             shprint(sh.make, _env=env)
             # Copy the shared library
