@@ -6,6 +6,6 @@
 --arch          armeabi
 --dist_name     testproject
 --bootstrap     sdl2
---requirements  cherrypy,libnacl,requests,python2,numpy,kivy,openssl,twisted,pyasn1,pil,netifaces,libsodium,libtorrent
+--requirements  openssl,libtorrent
 --permission    WRITE_EXTERNAL_STORAGE
 --permission    INTERNET
