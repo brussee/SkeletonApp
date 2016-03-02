@@ -6,7 +6,6 @@ class PyLevelDBRecipe(PythonRecipe):
     version = '0.193'
     url = 'https://pypi.python.org/packages/source/l/leveldb/leveldb-{version}.tar.gz'
     depends = ['leveldb', 'hostpython2', 'python2', 'setuptools']
-    opt_depends = ['snappy']
     call_hostpython_via_targetpython = False
     patches = ['bindings-only.patch']
 
