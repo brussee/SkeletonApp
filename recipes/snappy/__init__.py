@@ -7,6 +7,7 @@ class SnappyRecipe(Recipe):
     url = 'https://github.com/google/snappy/releases/download/{version}/snappy-{version}.tar.gz'
 
     def should_build(self, arch):
+        # Only download to use in leveldb recipe
         return False
 
     def build_arch(self, arch):
