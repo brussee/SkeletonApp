@@ -12,6 +12,7 @@ from setuptools import setup, Extension
 extra_compile_args = [
       '-I./leveldb/include',
       '-I./leveldb',
+      '-I./snappy',
       '-I.',
       '-O2',
       '-fPIC',

@@ -15,13 +15,14 @@ class PyLevelDBRecipe(PythonRecipe):
     def build_arch(self, arch):
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # Copy source from leveldb recipe
+            # Overwrite with source from leveldb recipe
             sh.cp('-rf', self.get_recipe('leveldb', self.ctx).get_build_dir(arch.arch),
                          self.get_build_dir(arch.arch))
+            # Remove snappy source in this pypi package
+            sh.rm('-rf', './snappy')
             if 'snappy' in recipe.ctx.recipe_build_order:
-                # Move source from snappy recipe
-                sh.mv('-rf', './leveldb/snappy',
-                             './snappy')
+                # Use source from snappy recipe
+                sh.ln('-s', self.get_recipe('snappy', self.ctx).get_build_dir(arch.arch), 'snappy')
             # Build python bindings
             hostpython = sh.Command(self.hostpython_location)
             shprint(hostpython,
