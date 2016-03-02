@@ -15,16 +15,20 @@ class PyLevelDBRecipe(PythonRecipe):
     def build_arch(self, arch):
         env = self.get_recipe_env(arch)
         with current_directory(self.get_build_dir(arch.arch)):
-            # Copy latest version from leveldb recipe
+            # Copy source from leveldb recipe
             sh.cp('-rf', self.get_recipe('leveldb', self.ctx).get_build_dir(arch.arch),
                          self.get_build_dir(arch.arch))
-            # Build LevelDB python bindings
+            if 'snappy' in recipe.ctx.recipe_build_order:
+                # Move source from snappy recipe
+                sh.mv('-rf', './leveldb/snappy',
+                             './snappy')
+            # Build python bindings
             hostpython = sh.Command(self.hostpython_location)
             shprint(hostpython,
                     'setup.py',
                     'build'
             , _env=env)
-        # Install LevelDB python bindings
+        # Install python bindings
         super(PyLevelDBRecipe, self).build_arch(arch)
 
     def get_recipe_env(self, arch):
