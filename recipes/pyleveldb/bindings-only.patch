@@ -1,5 +1,5 @@
 --- pyleveldb/setup.py	2014-03-28 02:51:24.000000000 +0100
-+++ pyleveldb-patch/setup.py	2016-03-01 20:21:51.710827000 +0100
++++ pyleveldb-patch/setup.py	2016-03-02 11:52:13.780678586 +0100
 @@ -7,41 +7,22 @@
  #
  # See LICENSE for details.
@@ -15,7 +15,8 @@
 +extra_compile_args = [
        '-I./leveldb/include',
        '-I./leveldb',
-       '-I./snappy',
+-      '-I./snappy',
++      '-I./leveldb/snappy',
        '-I.',
 -      '-fno-builtin-memcmp',
        '-O2',

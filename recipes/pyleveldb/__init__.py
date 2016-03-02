@@ -20,9 +20,6 @@ class PyLevelDBRecipe(PythonRecipe):
             sh.rm('-rf', './leveldb', './leveldb.egg-info', './snappy')
             # Use source from leveldb recipe
             sh.ln('-s', self.get_recipe('leveldb', self.ctx).get_build_dir(arch.arch), 'leveldb')
-            if 'snappy' in recipe.ctx.recipe_build_order:
-                # Use source from snappy recipe
-                sh.ln('-s', self.get_recipe('snappy', self.ctx).get_build_dir(arch.arch), 'snappy')
             # Build python bindings
             hostpython = sh.Command(self.hostpython_location)
             shprint(hostpython,
