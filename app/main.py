@@ -16,6 +16,9 @@ for i in xrange(1000):
 
 db.Write(batch, sync = True)
 
+db = None
+db = leveldb.LevelDB('./db')
+
 for i in xrange(1000):
   print db.Get(str(i))
 
