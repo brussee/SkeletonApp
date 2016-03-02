@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RECIPE=apsw
+export RECIPE=pyleveldb
 
 export ANDROIDSDK=/opt/android-sdk-linux
 export ANDROIDNDK=/opt/android-ndk-r10e
