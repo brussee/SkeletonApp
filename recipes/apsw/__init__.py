@@ -16,7 +16,7 @@ class ApswRecipe(PythonRecipe):
             hostpython = sh.Command(self.hostpython_location)
             shprint(hostpython,
                     'setup.py',
-                    'build',
+                    'build_ext',
                     '--enable=fts4'
             , _env=env)
         # Install python bindings
@@ -24,8 +24,14 @@ class ApswRecipe(PythonRecipe):
 
     def get_recipe_env(self, arch):
         env = super(ApswRecipe, self).get_recipe_env(arch)
-        env['CFLAGS'] += ' -I' + self.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch)
-        env['LDFLAGS'] += ' -lsqlite3'
+        env['PYTHON_ROOT'] = self.ctx.get_python_install_dir()
+        env['CFLAGS'] += ' -I' + env['PYTHON_ROOT'] + '/include/python2.7' + \
+                         ' -I' + self.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch)
+        # Set linker to use the correct gcc
+        env['LDSHARED'] = env['CC'] + ' -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions'
+        env['LDFLAGS'] += ' -L' + env['PYTHON_ROOT'] + '/lib' + \
+                          ' -lpython2.7' + \
+                          ' -lsqlite3'
         return env
 
 recipe = ApswRecipe()
