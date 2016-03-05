@@ -6,7 +6,7 @@
 --arch          armeabi
 --dist_name     testproject
 --bootstrap     sdl2
---requirements  cherrypy,libnacl,requests,python2,pyjnius,numpy,kivy,openssl,twisted,pyasn1,pil,netifaces,libsodium,libtorrent
+--requirements  kivy,pyjnius,numpy,libtribler
 
 --permission    CAMERA
 --permission    RECORD_AUDIO
