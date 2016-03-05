@@ -6,8 +6,7 @@
 --arch          armeabi
 --dist_name     testproject
 --bootstrap     sdl2
---requirements  android,kivy,numpy,libtribler
---whitelist     .p4a-whitelist
+--requirements  openssl,sqlite3,python2
 
 --permission    CAMERA
 --permission    RECORD_AUDIO
