@@ -6,7 +6,7 @@
 --arch          armeabi
 --dist_name     testproject
 --bootstrap     sdl2
---requirements  kivy,pyjnius,numpy,libtribler
+--requirements  android,kivy,pyjnius,numpy,libtribler
 
 --permission    CAMERA
 --permission    RECORD_AUDIO
