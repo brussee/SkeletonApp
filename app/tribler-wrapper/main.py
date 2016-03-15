@@ -65,7 +65,7 @@ arg = os.getenv('PYTHON_SERVICE_ARGUMENT')
 
 # Setup the environment:
 from jnius import autoclass
-PythonActivity = autoclass('org.renpy.android.PythonActivity')
+PythonActivity = autoclass('org.kivy.android.PythonActivity')
 FILES_DIR = PythonActivity.mActivity.getFilesDir().getAbsolutePath()
 os.environ["PYTHON_EGG_CACHE"] = FILES_DIR + '/files/.python-eggs' # TODO: set proper environment (it's already set in Environment.py)
 

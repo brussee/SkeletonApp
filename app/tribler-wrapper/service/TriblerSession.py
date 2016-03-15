@@ -142,7 +142,7 @@ class TriblerSession(BaseManager):
 
         # TODO: This is temporary for testing:
         from jnius import autoclass
-        python_activity = autoclass('org.renpy.android.PythonActivity')
+        python_activity = autoclass('org.kivy.android.PythonActivity')
         files_dir = python_activity.mActivity.getFilesDir().getAbsolutePath()
         install_dir = files_dir + u'/lib/python2.7/site-packages'
         _logger.info("Set tribler_install_dir to %s" % install_dir)
