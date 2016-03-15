@@ -1,11 +1,8 @@
 #!/bin/bash
 
+export APK=Tribler-0.1-debug.apk
+
 export ADB=/opt/android-sdk-linux/platform-tools/adb
-
-cd dist
-
-#find the first apk
-export APK=$(find -type f -name "*.apk" | head -n1)
 
 if [ -z "$APK" ] || [ ! -f $APK ]; then
     echo ".apk not found"
