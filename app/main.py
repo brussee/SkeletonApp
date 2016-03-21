@@ -1,79 +1,79 @@
 __version__ = '1.0'
-print("import App")
+#print("import App")
 from kivy.app import App
-print("import ScreenManager, Screen")
+#print("import ScreenManager, Screen")
 from kivy.uix.screenmanager import ScreenManager, Screen
-print("import BoxLayout")
+#print("import BoxLayout")
 from kivy.uix.boxlayout import BoxLayout
-print("import Widget")
+#print("import Widget")
 from kivy.uix.widget import Widget
-print("import Window")
+#print("import Window")
 from kivy.core.window import Window
-print("import Builder")
+#print("import Builder")
 from kivy.lang import Builder
-print("import Clock")
+#print("import Clock")
 from kivy.clock import Clock
-print("import AnchorLayout")
+#print("import AnchorLayout")
 from kivy.uix.anchorlayout import AnchorLayout
-print("import ObjectProperty, ListProperty")
+#print("import ObjectProperty, ListProperty")
 from kivy.properties import ObjectProperty, ListProperty
 
-print("import android")
+#print("import android")
 import android
-print("import os")
+#print("import os")
 import os
-print("import io")
+#print("import io")
 import io
-print("import threading")
+#print("import threading")
 import threading
 
-print("import AndroidCamera")
+#print("import AndroidCamera")
 from androidcamera import AndroidCamera
-print("import HomeScreen")
+#print("import HomeScreen")
 from homescreen import HomeScreen
-print("import FileWidget")
+#print("import FileWidget")
 from filewidget import FileWidget
 
-print("import globalvars")
+#print("import globalvars")
 import globalvars
 
-print("import autoclass, cast, detach")
+#print("import autoclass, cast, detach")
 from jnius import autoclass, cast, detach
-print("jnius import JavaClass")
+#print("jnius import JavaClass")
 from jnius import JavaClass
-print("import PythonJavaClass")
+#print("import PythonJavaClass")
 from jnius import PythonJavaClass
-print("import run_on_ui_thread")
+#print("import run_on_ui_thread")
 from android.runnable import run_on_ui_thread
 
-print("Context")
+#print("Context")
 Context = autoclass('android.content.Context')
-print("PythonActivity")
+#print("PythonActivity")
 PythonActivity = autoclass('org.kivy.android.PythonActivity')
-print("Intent")
+#print("Intent")
 Intent = autoclass('android.content.Intent')
-print("Uri")
+#print("Uri")
 Uri = autoclass('android.net.Uri')
-print("NfcAdapter")
+#print("NfcAdapter")
 NfcAdapter = autoclass('android.nfc.NfcAdapter')
-print("File")
+#print("File")
 File = autoclass('java.io.File')
 #print("CreateNfcBeamUrisCallback")
 #CreateNfcBeamUrisCallback = autoclass('org.test.CreateNfcBeamUrisCallback')
-print("MediaStore")
+#print("MediaStore")
 MediaStore = autoclass('android.provider.MediaStore')
-print("MediaRecorder")
+#print("MediaRecorder")
 MediaRecorder = autoclass('android.media.MediaRecorder')
-print("Camera")
+#print("Camera")
 Camera = autoclass('android.hardware.Camera')
-print("CamCorderProfile")
+#print("CamCorderProfile")
 CamCorderProfile = autoclass('android.media.CamcorderProfile')
-print("TextUtils")
+#print("TextUtils")
 TextUtils = autoclass('android.text.TextUtils')
-print("MediaColumns")
+#print("MediaColumns")
 MediaColumns = autoclass('android.provider.MediaStore$MediaColumns')
 
-print("main.kv")
+#print("main.kv")
 Builder.load_file('main.kv')
 
 class SearchScreen(Screen):
