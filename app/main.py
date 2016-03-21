@@ -26,13 +26,12 @@ from jnius import PythonJavaClass
 from android.runnable import run_on_ui_thread
 
 Context = autoclass('android.content.Context')
-PythonActivity = autoclass('org.renpy.android.PythonActivity')
-activity = PythonActivity.mActivity
+PythonActivity = autoclass('org.kivy.android.PythonActivity')
 Intent = autoclass('android.content.Intent')
 Uri = autoclass('android.net.Uri')
 NfcAdapter = autoclass('android.nfc.NfcAdapter')
 File = autoclass('java.io.File')
-CreateNfcBeamUrisCallback = autoclass('org.test.CreateNfcBeamUrisCallback')
+#CreateNfcBeamUrisCallback = autoclass('org.tribler.android.CreateNfcBeamUrisCallback')
 MediaStore = autoclass('android.provider.MediaStore')
 MediaRecorder = autoclass('android.media.MediaRecorder')
 Camera = autoclass('android.hardware.Camera')
@@ -117,7 +116,7 @@ class Skelly(App):
 	#Method that request the device's NFC adapter and adds a Callback function to it to activate on an Android Beam Intent.
 	def nfc_init(self):
 		#Request the Activity to obtain the NFC Adapter and later add it to the Callback. 
-		self.j_context = context = activity
+		self.j_context = context = PythonActivity.mActivity
 		self.adapter = NfcAdapter.getDefaultAdapter(context)
 
 		#Only activate the NFC functionality if the device supports it.
@@ -144,12 +143,12 @@ class Skelly(App):
 
 	def build(self):
 		#Android back mapping
-		android.map_key(android.KEYCODE_BACK,1001)
+		#android.map_key(android.KEYCODE_BACK,1001)
 		win = Window
 		win.bind(on_keyboard=self.key_handler)
 		#globalvars.init()
 
-		self.nfc_init()
+		#self.nfc_init()
 		self.HomeScr.getStoredMedia()
 
 		return self.sm

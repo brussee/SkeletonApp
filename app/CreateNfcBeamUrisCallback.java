@@ -1,4 +1,4 @@
-package org.test;
+package org.tribler.android;
 
 import java.io.File;
 import java.util.ArrayList;
