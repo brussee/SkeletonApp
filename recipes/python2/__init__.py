@@ -68,9 +68,6 @@ class Python2Recipe(TargetPythonRecipe):
         #     return
 
     def do_python_build(self, arch):
-        if 'sqlite' in self.ctx.recipe_build_order:
-            print('sqlite support not yet enabled in python recipe')
-            exit(1)
 
         hostpython_recipe = Recipe.get_recipe('hostpython2', self.ctx)
         shprint(sh.cp, self.ctx.hostpython, self.get_build_dir(arch.arch))
