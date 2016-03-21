@@ -2,9 +2,9 @@ from pythonforandroid.toolchain import PythonRecipe
 
 class RequestsRecipe(PythonRecipe):
     version = '2.9.1'
-    url = 'https://pypi.python.org/packages/source/r/requests/requests-{version}.tar.gz'
-    #md5sum = '0b7f480d19012ec52bab78292efd976d'
-    depends = ['hostpython2']
+    url = 'https://github.com/kennethreitz/requests/archive/v{version}.tar.gz'
+    depends = ['hostpython2', 'setuptools']
     site_packages_name = 'requests'
+    call_hostpython_via_targetpython = False
 
 recipe = RequestsRecipe()
