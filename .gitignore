@@ -2,6 +2,7 @@
 *.pyo
 *.pyc
 
+.*project
 *.*~
 *.apk
 screen.png
