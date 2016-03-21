@@ -1,1 +1,2 @@
-import sqlite3
+import _ssl
+import _sqlite3

@@ -106,7 +106,7 @@ class Python2Recipe(TargetPythonRecipe):
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
                     'sqlite3 sqlite3.c -DSQLITE_ENABLE_FTS4',
                     ' -I$(SQLITE)',
-                    ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
+                    ' -L$(SQLITE)/obj/local/' + arch.arch + '/objs -lsqlite3',
                 '\n'])
             file.close()
 
