@@ -97,16 +97,28 @@ class Python2Recipe(TargetPythonRecipe):
             if 'openssl' in self.ctx.recipe_build_order:
                 file.writelines([
                     'SSL=' + Recipe.get_recipe('openssl', self.ctx).get_build_dir(arch.arch) + '\n',
-                    '_ssl _ssl.c -DUSE_SSL',
+                    '_ssl',
+                    ' _ssl.c',
+                    ' -DUSE_SSL',
                     ' -I$(SSL)/include -I$(SSL)/include/openssl',
                     ' -L$(SSL) -lssl -lcrypto',
                 '\n'])
             if 'sqlite3' in self.ctx.recipe_build_order:
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
-                    'sqlite3 sqlite3.c -DSQLITE_ENABLE_FTS4',
+                    '_sqlite3',
+                    ' _sqlite/cache.c',
+                    ' _sqlite/connection.c',
+                    ' _sqlite/cursor.c',
+                    ' _sqlite/microprotocols.c',
+                    ' _sqlite/module.c',
+                    ' _sqlite/prepare_protocol.c',
+                    ' _sqlite/row.c',
+                    ' _sqlite/statement.c',
+                    ' _sqlite/util.c',
+                    ' -DSQLITE_ENABLE_FTS4',
                     ' -I$(SQLITE)',
-                    ' -L$(SQLITE)/obj/local/' + arch.arch + '/objs -lsqlite3',
+                    ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
                 '\n'])
             file.close()
 
