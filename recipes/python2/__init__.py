@@ -107,18 +107,20 @@ class Python2Recipe(TargetPythonRecipe):
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
                     '_sqlite3',
-                    ' _sqlite/cache.c',
+                    ' _sqlite/module.c',
                     ' _sqlite/connection.c',
                     ' _sqlite/cursor.c',
+                    ' _sqlite/cache.c',
                     ' _sqlite/microprotocols.c',
-                    ' _sqlite/module.c',
                     ' _sqlite/prepare_protocol.c',
-                    ' _sqlite/row.c',
                     ' _sqlite/statement.c',
                     ' _sqlite/util.c',
+                    ' _sqlite/row.c',
                     ' -DSQLITE_ENABLE_FTS4',
+                    ' -DMODULE_NAME=_sqlite3',
                     ' -I$(SQLITE)',
                     ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
+                    #' -o_sqlite/',
                 '\n'])
             file.close()
 
