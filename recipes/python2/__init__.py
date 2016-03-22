@@ -104,14 +104,14 @@ class Python2Recipe(TargetPythonRecipe):
                     ' -L$(SSL) -lssl -lcrypto',
                 '\n'])
             if 'sqlite3' in self.ctx.recipe_build_order:
-                self.apply_patch('patches/enable-sqlite3.patch', arch.arch)
-                sqlite3_root = Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch)
-                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_INC#{}#'.format(sqlite3_root),
-                        join(self.get_build_dir(arch.arch), 'setup.py'))
-                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(
-                        join(sqlite3_root, 'obj/local', arch.arch)),
-                        join(self.get_build_dir(arch.arch), 'setup.py'))
-                '''
+                #self.apply_patch('patches/enable-sqlite3.patch', arch.arch)
+                #sqlite3_root = Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch)
+                #shprint(sh.sed, '-i', 's#SQLITE_RECIPE_INC#{}#'.format(sqlite3_root),
+                #        join(self.get_build_dir(arch.arch), 'setup.py'))
+                #shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(
+                #        join(sqlite3_root, 'obj/local', arch.arch)),
+                #        join(self.get_build_dir(arch.arch), 'setup.py'))
+                
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
                     '_sqlite3',
@@ -125,12 +125,12 @@ class Python2Recipe(TargetPythonRecipe):
                     ' _sqlite/util.c',
                     ' _sqlite/row.c',
                     ' -DSQLITE_ENABLE_FTS4',
-                    #' -DMODULE_NAME _sqlite3',
+                    ' -DMODULE_NAME=\'"_sqlite3"\'',
                     ' -I$(SQLITE)',
                     ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
                     #' -o_sqlite/',
                 '\n'])
-                '''
+                
             file.close()
 
             configure = sh.Command('./configure')
