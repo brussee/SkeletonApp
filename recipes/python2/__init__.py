@@ -125,7 +125,7 @@ class Python2Recipe(TargetPythonRecipe):
                     ' _sqlite/util.c',
                     ' _sqlite/row.c',
                     ' -DSQLITE_ENABLE_FTS4',
-                    ' -DMODULE_NAME=\'"_sqlite3"\'',
+                    ' -D\'MODULE_NAME="_sqlite3"\'',
                     ' -I$(SQLITE)',
                     ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
                     #' -o_sqlite/',
