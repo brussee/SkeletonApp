@@ -106,9 +106,9 @@ class Python2Recipe(TargetPythonRecipe):
             if 'sqlite3' in self.ctx.recipe_build_order:
                 self.apply_patch('patches/enable-sqlite3.patch', arch.arch)
                 sqlite3_root = Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch)
-                shprint(sh.sed, '-i', 's#/SQLITE_RECIPE_INC#{}#'.format(sqlite3_root),
+                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_INC#{}#'.format(sqlite3_root),
                         join(self.get_build_dir(arch.arch), 'setup.py'))
-                shprint(sh.sed, '-i', 's#/SQLITE_RECIPE_LIB#{}#'.format(
+                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(
                         join(sqlite3_root, 'obj/local', arch.arch)),
                         join(self.get_build_dir(arch.arch), 'setup.py'))
                 '''
