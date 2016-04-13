@@ -1,1 +1,1 @@
-import sqlite3
+import _sqlite3
