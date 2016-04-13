@@ -1,6 +1,6 @@
 --- python2-orig/setup.py	2016-04-13 15:19:08.857977000 +0200
-+++ python2-patch/setup.py	2016-04-13 15:45:59.115371614 +0200
-@@ -1020,18 +1020,13 @@
++++ python2-patch/setup.py	2016-04-13 17:43:40.338838216 +0200
+@@ -1020,12 +1020,14 @@
              missing.append('_bsddb')
  
          # The sqlite interface
@@ -11,19 +11,14 @@
          # We need to find >= sqlite version 3.0.8
 -        sqlite_incdir = sqlite_libdir = None
 -        sqlite_inc_paths = [ '/usr/include',
--                             '/usr/include/sqlite',
--                             '/usr/include/sqlite3',
--                             '/usr/local/include',
--                             '/usr/local/include/sqlite',
--                             '/usr/local/include/sqlite3',
--                           ]
 +        sqlite_incdir = 'SQLITE_RECIPE_INC'
 +        sqlite_libdir = 'SQLITE_RECIPE_LIB'
-+        sqlite_inc_paths = [ sqlite_incdir ]
-         MIN_SQLITE_VERSION_NUMBER = (3, 0, 8)
-         MIN_SQLITE_VERSION = ".".join([str(x)
-                                     for x in MIN_SQLITE_VERSION_NUMBER])
-@@ -1071,7 +1066,7 @@
++        sqlite_inc_paths = [ sqlite_incdir,
++                             '/usr/include',
+                              '/usr/include/sqlite',
+                              '/usr/include/sqlite3',
+                              '/usr/local/include',
+@@ -1071,7 +1073,7 @@
                      print "sqlite: %s had no SQLITE_VERSION"%(f,)
  
          if sqlite_incdir:
@@ -32,12 +27,12 @@
                  os.path.join(sqlite_incdir, '..', 'lib64'),
                  os.path.join(sqlite_incdir, '..', 'lib'),
                  os.path.join(sqlite_incdir, '..', '..', 'lib64'),
-@@ -1083,6 +1078,8 @@
+@@ -1083,6 +1085,8 @@
                  sqlite_libdir = [os.path.abspath(os.path.dirname(sqlite_libfile))]
  
          if sqlite_incdir and sqlite_libdir:
 +            if sqlite_setup_debug:
-+                print sqlite_libdir
++                print "sqlite_libdir: %s"%(sqlite_libdir,)
              sqlite_srcs = ['_sqlite/cache.c',
                  '_sqlite/connection.c',
                  '_sqlite/cursor.c',
