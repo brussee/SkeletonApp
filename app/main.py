@@ -1,12 +1,14 @@
 try:
-    import sqlite3
+    import _ssl
 except ImportError:
-    print("no sqlite3")
+    print("no _ssl")
+
 try:
     import _sqlite3
 except ImportError:
     print("no _sqlite3")
+
 try:
-    import _ssl
+    import sqlite3
 except ImportError:
-    print("no _ssl")
+    print("no sqlite3")
