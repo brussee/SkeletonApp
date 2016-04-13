@@ -1,0 +1,25 @@
+--- python2/setup.py	2016-04-13 14:54:51.893812230 +0200
++++ python2-patch/setup.py	2016-04-13 14:54:04.593672000 +0200
+@@ -1020,18 +1020,13 @@
+             missing.append('_bsddb')
+ 
+         # The sqlite interface
+-        sqlite_setup_debug = False   # verbose debug prints from this script?
++        sqlite_setup_debug = True   # verbose debug prints from this script?
+ 
+         # We hunt for #define SQLITE_VERSION "n.n.n"
+         # We need to find >= sqlite version 3.0.8
+-        sqlite_incdir = sqlite_libdir = None
+-        sqlite_inc_paths = [ '/usr/include',
+-                             '/usr/include/sqlite',
+-                             '/usr/include/sqlite3',
+-                             '/usr/local/include',
+-                             '/usr/local/include/sqlite',
+-                             '/usr/local/include/sqlite3',
+-                           ]
++        sqlite_incdir = 'SQLITE_RECIPE_INC'
++        sqlite_libdir = 'SQLITE_RECIPE_LIB'
++        sqlite_inc_paths = [ sqlite_incdir ]
+         MIN_SQLITE_VERSION_NUMBER = (3, 0, 8)
+         MIN_SQLITE_VERSION = ".".join([str(x)
+                                     for x in MIN_SQLITE_VERSION_NUMBER])
