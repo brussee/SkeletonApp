@@ -111,27 +111,27 @@ class Python2Recipe(TargetPythonRecipe):
                 #shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(
                 #        join(sqlite3_root, 'obj/local', arch.arch)),
                 #        join(self.get_build_dir(arch.arch), 'setup.py'))
-
+                '''
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
                     '_sqlite3',
-                    ' Modules/_sqlite/module.c',
-                    ' Modules/_sqlite/connection.c',
-                    ' Modules/_sqlite/cursor.c',
-                    ' Modules/_sqlite/cache.c',
-                    ' Modules/_sqlite/microprotocols.c',
-                    ' Modules/_sqlite/prepare_protocol.c',
-                    ' Modules/_sqlite/statement.c',
-                    ' Modules/_sqlite/util.c',
-                    ' Modules/_sqlite/row.c',
+                    ' _sqlite/module.c',
+                    ' _sqlite/connection.c',
+                    ' _sqlite/cursor.c',
+                    ' _sqlite/cache.c',
+                    ' _sqlite/microprotocols.c',
+                    ' _sqlite/prepare_protocol.c',
+                    ' _sqlite/statement.c',
+                    ' _sqlite/util.c',
+                    ' _sqlite/row.c',
                     ' -DSQLITE_ENABLE_FTS4',
-                    ' -DMODULE_NAME=\\"sqlite3\\"',
+                    ' -D\'MODULE_NAME="sqlite3"\'',
                     ' -IModules/_sqlite',
                     ' -I$(SQLITE)',
                     ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
                     #' -o_sqlite/',
                 '\n'])
-
+                '''
             file.close()
 
             configure = sh.Command('./configure')
