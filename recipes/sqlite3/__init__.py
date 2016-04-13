@@ -16,17 +16,15 @@ class Sqlite3Recipe(NDKRecipe):
         sh.mkdir('-p', join(self.get_build_dir(arch.arch), 'jni'))
 
     def build_arch(self, arch, *extra_args):
+        # Build static lib
         shutil.copyfile(join(self.get_recipe_dir(), 'Android-static.mk'),
                         join(self.get_build_dir(arch.arch), 'jni/Android.mk'))
-        # Build static lib
         super(Sqlite3Recipe, self).build_arch(arch)
-        shutil.copyfile(join(self.get_build_dir(arch.arch), 'obj/local', arch.arch, 'libsqlite3.a'),
-                        join(self.ctx.get_libs_dir(arch.arch), 'libsqlite3.a'))
-
+        # Build shared lib
         shutil.copyfile(join(self.get_recipe_dir(), 'Android-shared.mk'),
                         join(self.get_build_dir(arch.arch), 'jni/Android.mk'))
-        # Build shared lib
         super(Sqlite3Recipe, self).build_arch(arch)
+        # Copy shared lib
         shutil.copyfile(join(self.get_build_dir(arch.arch), 'libs', arch.arch, 'libsqlite3.so'),
                         join(self.ctx.get_libs_dir(arch.arch), 'libsqlite3.so'))
 
