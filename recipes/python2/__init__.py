@@ -118,6 +118,7 @@ class Python2Recipe(TargetPythonRecipe):
                 #shprint(sh.cp, join(self.get_recipe_dir(), 'module_name.c'),
                 #               join(self.get_build_dir(arch.arch), 'Modules/_sqlite/module_name.c'))
                 self.apply_patch('patches/sqlite3-modulename.patch', arch.arch)
+                self.apply_patch('patches/sqlite3-prepare_protocol.patch', arch.arch)
                 # Config module
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',

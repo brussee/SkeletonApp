@@ -21,10 +21,14 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+#ifndef MODULE_NAME
+#define MODULE_NAME "sqlite3"
+#endif
+
 #ifndef PYSQLITE_MODULE_H
 #define PYSQLITE_MODULE_H
 #include "Python.h"
-#define MODULE_NAME sqlite3
+
 #define PYSQLITE_VERSION "2.6.0"
 
 extern PyObject* pysqlite_Error;

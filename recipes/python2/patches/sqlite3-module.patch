@@ -1,0 +1,13 @@
+--- python2-orig/Modules/_sqlite/module.h	2016-04-13 21:19:03.640559434 +0200
++++ python2-patch/Modules/_sqlite/module.h	2016-04-13 21:32:24.371679740 +0200
+@@ -21,6 +21,10 @@
+  * 3. This notice may not be removed or altered from any source distribution.
+  */
+ 
++#ifndef MODULE_NAME
++#define MODULE_NAME "sqlite3"
++#endif
++
+ #ifndef PYSQLITE_MODULE_H
+ #define PYSQLITE_MODULE_H
+ #include "Python.h"
