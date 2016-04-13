@@ -114,11 +114,15 @@ class Python2Recipe(TargetPythonRecipe):
                 shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(
                         join(sqlite3_root, 'obj/local', arch.arch)),
                         join(self.get_build_dir(arch.arch), 'setup.py'))
-
+                # Define module_name
+                shprint(sh.cp, join(self.get_recipe_dir(), 'module_name.c'),
+                               join(self.get_build_dir(arch.arch), 'Modules/_sqlite/module_name.c'))
+                # Config module
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
-                    #'_sqlite3',
-                    '_sqlite3 $(SQLITE)/sqlite3.c -DSQLITE_ENABLE_FTS4',
+                    '_sqlite3',
+                    #'_sqlite3 $(SQLITE)/sqlite3.c -DSQLITE_ENABLE_FTS4',
+                    ' _sqlite/module_name.c',
                     ' _sqlite/module.c',
                     ' _sqlite/connection.c',
                     ' _sqlite/cursor.c',
@@ -128,8 +132,8 @@ class Python2Recipe(TargetPythonRecipe):
                     ' _sqlite/statement.c',
                     ' _sqlite/util.c',
                     ' _sqlite/row.c',
+                    #' -D\'MODULE_NAME="sqlite3"\'',
                     ' -DSQLITE_ENABLE_FTS4',
-                    ' -D\'MODULE_NAME="sqlite3"\'',
                     ' -IModules/_sqlite',
                     ' -I$(SQLITE)',
                     ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
