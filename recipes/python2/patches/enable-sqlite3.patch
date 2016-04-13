@@ -1,5 +1,5 @@
 --- python2-orig/setup.py	2016-04-13 15:19:08.857977000 +0200
-+++ python2-patch/setup.py	2016-04-13 15:23:22.350438390 +0200
++++ python2-patch/setup.py	2016-04-13 15:45:59.115371614 +0200
 @@ -1020,18 +1020,13 @@
              missing.append('_bsddb')
  
@@ -23,17 +23,21 @@
          MIN_SQLITE_VERSION_NUMBER = (3, 0, 8)
          MIN_SQLITE_VERSION = ".".join([str(x)
                                      for x in MIN_SQLITE_VERSION_NUMBER])
-@@ -1071,12 +1066,7 @@
+@@ -1071,7 +1066,7 @@
                      print "sqlite: %s had no SQLITE_VERSION"%(f,)
  
          if sqlite_incdir:
 -            sqlite_dirs_to_check = [
--                os.path.join(sqlite_incdir, '..', 'lib64'),
--                os.path.join(sqlite_incdir, '..', 'lib'),
--                os.path.join(sqlite_incdir, '..', '..', 'lib64'),
--                os.path.join(sqlite_incdir, '..', '..', 'lib'),
--            ]
-+            sqlite_dirs_to_check = [ sqlite_libdir ]
-             sqlite_libfile = self.compiler.find_library_file(
-                                 sqlite_dirs_to_check + lib_dirs, 'sqlite3')
-             if sqlite_libfile:
++            sqlite_dirs_to_check = [ sqlite_libdir,
+                 os.path.join(sqlite_incdir, '..', 'lib64'),
+                 os.path.join(sqlite_incdir, '..', 'lib'),
+                 os.path.join(sqlite_incdir, '..', '..', 'lib64'),
+@@ -1083,6 +1078,8 @@
+                 sqlite_libdir = [os.path.abspath(os.path.dirname(sqlite_libfile))]
+ 
+         if sqlite_incdir and sqlite_libdir:
++            if sqlite_setup_debug:
++                print sqlite_libdir
+             sqlite_srcs = ['_sqlite/cache.c',
+                 '_sqlite/connection.c',
+                 '_sqlite/cursor.c',
