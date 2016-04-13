@@ -1,3 +1,4 @@
+from time import sleep
 
 print sys.modules
 
@@ -22,3 +23,5 @@ try:
     import sqlite3
 except ImportError:
     print("no sqlite3")
+
+sleep(1000000)
