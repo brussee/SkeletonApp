@@ -102,14 +102,20 @@ class Python2Recipe(TargetPythonRecipe):
                     ' -L$(SSL) -lssl -lcrypto',
                 '\n'])
             if 'sqlite3' in self.ctx.recipe_build_order:
+                
+                # Modify python2 setup.py to include sqlite3
                 self.apply_patch('patches/enable-sqlite3.patch', arch.arch)
+                # Get source from sqlite3 recipe
                 sqlite3_root = Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch)
+                # Insert include path in setup.py
                 shprint(sh.sed, '-i', 's#SQLITE_RECIPE_INC#{}#'.format(sqlite3_root),
                         join(self.get_build_dir(arch.arch), 'setup.py'))
+                # Insert library path in setup.py
                 shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(
                         join(sqlite3_root, 'obj/local', arch.arch)),
                         join(self.get_build_dir(arch.arch), 'setup.py'))
                 '''
+                # Compile sqlite3
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
                     'sqlite3 sqlite3.c -DSQLITE_ENABLE_FTS4',
