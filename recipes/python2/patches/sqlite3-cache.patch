@@ -1,0 +1,13 @@
+--- python2-orig/Modules/_sqlite/cache.h	2011-06-11 17:46:27.000000000 +0200
++++ python2-patch/Modules/_sqlite/cache.h	2016-04-13 21:37:10.578220049 +0200
+@@ -21,6 +21,10 @@
+  * 3. This notice may not be removed or altered from any source distribution.
+  */
+ 
++#ifndef MODULE_NAME
++#define MODULE_NAME "sqlite3"
++#endif
++
+ #ifndef PYSQLITE_CACHE_H
+ #define PYSQLITE_CACHE_H
+ #include "Python.h"

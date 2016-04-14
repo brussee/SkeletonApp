@@ -119,6 +119,7 @@ class Python2Recipe(TargetPythonRecipe):
                 #               join(self.get_build_dir(arch.arch), 'Modules/_sqlite/module_name.c'))
                 self.apply_patch('patches/sqlite3-modulename.patch', arch.arch)
                 self.apply_patch('patches/sqlite3-prepare_protocol.patch', arch.arch)
+                self.apply_patch('patches/sqlite3-cache.patch', arch.arch)
                 # Config module
                 file.writelines([
                     'SQLITE=' + Recipe.get_recipe('sqlite3', self.ctx).get_build_dir(arch.arch) + '\n',
@@ -137,6 +138,7 @@ class Python2Recipe(TargetPythonRecipe):
                     #' -D\'MODULE_NAME="sqlite3"\'',
                     ' -DSQLITE_ENABLE_FTS4',
                     ' -IModules/_sqlite',
+                    ' -I_sqlite',
                     ' -I$(SQLITE)',
                     ' -L$(SQLITE)/obj/local/' + arch.arch + ' -lsqlite3',
                     #' -o_sqlite/',
