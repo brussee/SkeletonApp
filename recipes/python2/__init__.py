@@ -102,7 +102,7 @@ class Python2Recipe(TargetPythonRecipe):
                 sqlite3recipe = Recipe.get_recipe('sqlite3', self.ctx)
                 sqlite_inc_dir = sqlite3recipe.get_build_dir(arch.arch)
                 sqlite_libs_dir = sqlite3recipe.get_lib_dir(arch)
-                env['CFLAGS'] += ' -I' + sqlite_inc_dir
+                env['CPPFLAGS'] = ' -I' + sqlite_inc_dir
                 env['LDFLAGS'] += ' -L' + sqlite_libs_dir + ' -lsqlite3'
                 self.apply_patch('patches/enable-sqlite3.patch', arch.arch)
                 shprint(sh.sed, '-i', 's#SQLITE_RECIPE_INC#{}#'.format(sqlite_inc_dir),
