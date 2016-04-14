@@ -1,3 +1,4 @@
  _csv.so
  _lsprof.so
  _sqlite3.so
+ sqlite3/*
