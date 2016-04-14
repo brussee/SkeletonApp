@@ -99,15 +99,22 @@ class Python2Recipe(TargetPythonRecipe):
                 shprint(sh.sed, '-i', 's#^SSL=.*#SSL={}#'.format(openssl_build_dir), setuplocal)
 
             if 'sqlite3' in self.ctx.recipe_build_order:
-                sqlite3recipe = Recipe.get_recipe('sqlite3', self.ctx)
-                sqlite_inc_dir = sqlite3recipe.get_build_dir(arch.arch)
-                sqlite_libs_dir = sqlite3recipe.get_lib_dir(arch)
-                env['CPPFLAGS'] = ' -I' + sqlite_inc_dir
-                env['LDFLAGS'] += ' -L' + sqlite_libs_dir + ' -lsqlite3'
+                # Include sqlite3 in python2 build
+                r = Recipe.get_recipe('sqlite3', self.ctx)
+                sqlite_incdir = r.get_build_dir(arch.arch)
+                sqlite_libdir = r.get_lib_dir(arch)
+                i = ' -I' + sqlite_incdir
+                l = ' -L' + sqlite_libdir + ' -lsqlite3'
+                # Insert or append to env
+                f = 'CPPFLAGS'
+                env[f] = env[f] + i if f in env else i
+                f = 'LDFLAGS'
+                env[f] = env[f] + l if f in env else l
+                # Patch _sqlite3 builtin module
                 self.apply_patch('patches/enable-sqlite3.patch', arch.arch)
-                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_INC#{}#'.format(sqlite_inc_dir),
+                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_INC#{}#'.format(sqlite_incdir),
                         join(self.get_build_dir(arch.arch), 'setup.py'))
-                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(sqlite_libs_dir),
+                shprint(sh.sed, '-i', 's#SQLITE_RECIPE_LIB#{}#'.format(sqlite_libdir),
                         join(self.get_build_dir(arch.arch), 'setup.py'))
 
             configure = sh.Command('./configure')
