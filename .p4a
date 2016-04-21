@@ -1,12 +1,14 @@
---name          "Tribler"
 --version       0.1
 --android_api   16
---package       org.tribler.android
---private       ./app
 --arch          armeabi
---dist_name     testproject
+--package       org.tribler.android
+--name          "Tribler"
+--service       TriblerService:./app/service/TriblerService.py
+--private       ./app
+--add-source    ./java-src
+--dist_name     TriblerApp
 --bootstrap     sdl2
---requirements  android,kivy,numpy,libtribler
+--requirements  android,kivy,libtribler
 --whitelist     .p4a-whitelist
 
 --permission    CAMERA
