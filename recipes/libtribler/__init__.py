@@ -15,11 +15,11 @@ class LibTriblerRecipe(PythonRecipe):
         return True
 
     def prebuild_arch(self, arch):
-        build_dir = self.get_build_dir(arch.arch)
-        # Remove empty build dir
-        rm('-rf', build_dir)
+        # Remove from site-packages
+        rm('-rf', '/home/paul/.local/share/python-for-android/build/python-installs/TriblerApp/lib/python2.7/site-packages/Tribler/')
 
         with current_directory(self.get_build_container_dir(arch.arch)):
+            rm('-rf', self.name)
             # Copy source from working copy
             cp('-rf', '/home/paul/repos/tribler', self.name)
 
