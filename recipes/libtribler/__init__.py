@@ -17,7 +17,7 @@ class LibTriblerRecipe(PythonRecipe):
     def prebuild_arch(self, arch):
         build_dir = self.get_build_dir(arch.arch)
 
-        if not os.path.islink(build_dir):
+        if not islink(build_dir):
             # Remove empty build dir
             sh.rm('-rf', build_dir)
 
