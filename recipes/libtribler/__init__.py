@@ -1,5 +1,5 @@
 from pythonforandroid.toolchain import PythonRecipe, shprint, shutil, current_directory
-from os.path import join, exists, dirname
+from os.path import join, exists
 import sh
 
 class LibTriblerRecipe(PythonRecipe):
