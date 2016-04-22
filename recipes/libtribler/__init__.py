@@ -25,6 +25,8 @@ class LibTriblerRecipe(PythonRecipe):
                 # Use source from working copy
                 ln('-s', '/home/paul/repos/tribler', self.name)
 
+        # Remove old build
+        rm('-rf', '/home/paul/repos/tribler/build/lib/Tribler')
         PythonRecipe.prebuild_arch(self, arch)
 
 recipe = LibTriblerRecipe()
