@@ -16,7 +16,7 @@ class LibTriblerRecipe(PythonRecipe):
 
     def prebuild_arch(self, arch):
         # Remove from site-packages
-        rm('-rf', '/home/paul/.local/share/python-for-android/build/python-installs/TriblerApp/lib/python2.7/site-packages/Tribler/')
+        PythonRecipe.clean_build(self, arch.arch)
 
         with current_directory(self.get_build_container_dir(arch.arch)):
             rm('-rf', self.name)
