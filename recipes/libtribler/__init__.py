@@ -19,11 +19,11 @@ class LibTriblerRecipe(PythonRecipe):
 
         if not islink(build_dir):
             # Remove empty build dir
-            sh.rm('-rf', build_dir)
+            rm('-rf', build_dir)
 
             with current_directory(self.get_build_container_dir(arch.arch)):
                 # Use source from working copy
-                sh.ln('-s', '/home/paul/repos/tribler', self.name)
+                ln('-s', '/home/paul/repos/tribler', self.name)
 
         PythonRecipe.prebuild_arch(self, arch)
 
