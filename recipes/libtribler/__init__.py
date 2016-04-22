@@ -1,6 +1,6 @@
 from pythonforandroid.toolchain import PythonRecipe, shprint, shutil, current_directory
-from os.path import join, exists
-import sh
+from os.path import join, exists, islink
+from sh import rm, ln
 
 class LibTriblerRecipe(PythonRecipe):
     version = 'working-copy'
@@ -15,11 +15,16 @@ class LibTriblerRecipe(PythonRecipe):
         return True
 
     def prebuild_arch(self, arch):
-        # Remove empty build dir
-        sh.rm('-rf', current_directory(self.get_build_dir(arch.arch)))
-        with current_directory(self.get_build_container_dir(arch.arch)):
-            # Use source from working copy
-            sh.ln('-s', '/home/paul/repos/tribler', self.name)
+        build_dir = self.get_build_dir(arch.arch)
+
+        if not os.path.islink(build_dir):
+            # Remove empty build dir
+            sh.rm('-rf', build_dir)
+
+            with current_directory(self.get_build_container_dir(arch.arch)):
+                # Use source from working copy
+                sh.ln('-s', '/home/paul/repos/tribler', self.name)
+
         PythonRecipe.prebuild_arch(self, arch)
 
 recipe = LibTriblerRecipe()
