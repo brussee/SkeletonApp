@@ -6,8 +6,9 @@ import glob
 
 
 class KivyRecipe(CythonRecipe):
-    version = 'git-master'
-    url = 'https://github.com/kivy/kivy/archive/master.zip'
+    # version = 'stable'
+    version = 'master'
+    url = 'https://github.com/kivy/kivy/archive/{version}.zip'
     name = 'kivy'
 
     depends = [('sdl2', 'pygame'), 'pyjnius']
