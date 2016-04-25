@@ -1,6 +1,6 @@
 from pythonforandroid.toolchain import PythonRecipe, shprint, shutil, current_directory
 from os.path import join, exists, islink
-from sh import rm, cp
+from sh import mkdir, cp
 
 class LibTriblerRecipe(PythonRecipe):
     version = 'working-copy'
