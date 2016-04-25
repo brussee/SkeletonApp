@@ -4,10 +4,10 @@ from sh import rm, cp
 
 class LibTriblerRecipe(PythonRecipe):
     version = 'working-copy'
-    depends = ['apsw', 'cherrypy', 'cryptography', 'decorator', 'feedparser',
-               'libnacl', 'libsodium', 'libtorrent', 'm2crypto', 'netifaces',
-               'openssl', 'pyasn1', 'pil', 'pyleveldb', 'python2', 'requests',
-               'twisted']
+    depends = ['android', 'apsw', 'cherrypy', 'cryptography', 'decorator',
+               'feedparser', 'libnacl', 'libsodium', 'libtorrent', 'm2crypto',
+               'netifaces', 'openssl', 'pyasn1', 'pil', 'pyleveldb', 'python2',
+               'requests', 'twisted']
     opt_depends = ['vlc', ('ffmpeg', 'libav-tools')]
 
     def should_build(self, arch):
