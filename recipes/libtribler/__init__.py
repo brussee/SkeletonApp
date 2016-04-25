@@ -18,8 +18,11 @@ class LibTriblerRecipe(PythonRecipe):
         # Remove from site-packages
         PythonRecipe.clean_build(self, arch.arch)
 
-        with current_directory(self.get_build_container_dir(arch.arch)):
-            rm('-rf', self.name)
+        # Create empty build dir
+        container_dir = self.get_build_container_dir(arch.arch)
+        mkdir('-p', container_dir)
+
+        with current_directory(container_dir):
             # Copy source from working copy
             cp('-rf', '/home/paul/repos/tribler', self.name)
 
