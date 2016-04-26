@@ -7,8 +7,7 @@ class LibTriblerRecipe(PythonRecipe):
     depends = ['android', 'apsw', 'cherrypy', 'cryptography', 'decorator',
                'feedparser', 'libnacl', 'libsodium', 'libtorrent', 'm2crypto',
                'netifaces', 'openssl', 'pyasn1', 'pil', 'pyleveldb', 'python2',
-               'requests', 'twisted']
-    opt_depends = ['vlc', ('ffmpeg', 'libav-tools')]
+               'requests', 'twisted', 'vlc']
 
     def should_build(self, arch):
         # Overwrite old build
