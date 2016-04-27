@@ -41,10 +41,8 @@ class LocalTriblerRecipe(PythonRecipe):
     def postbuild_arch(self, arch):
         super(LocalTriblerRecipe, self).postbuild_arch(arch)
         # Install ffmpeg binary
-        private_dir = join(self.ctx.dist_dir, 'TriblerApp', 'private')
-        mkdir('-p', private_dir)
         shutil.copyfile(self.get_recipe('ffmpeg', self.ctx).get_build_bin(arch),
-                        join(private_dir, 'ffmpeg'))
+                        '/home/paul/repos/tribler/android/app/ffmpeg')
 
 
 recipe = LocalTriblerRecipe()
