@@ -33,10 +33,10 @@ class LocalTriblerRecipe(PythonRecipe):
 
 
     def build_arch(self, arch):
-        super(LibTriblerRecipe, self).build_arch(arch)
+        super(LocalTriblerRecipe, self).build_arch(arch)
         # Install ffmpeg binary
         shutil.copyfile(self.get_recipe('ffmpeg', self.ctx).get_build_bin(arch),
-                        join(self.ctx.dist_dir, 'ffmpeg'))
+                        join(self.ctx.dist_dir, 'TriblerApp', 'private', 'ffmpeg'))
 
 
 recipe = LocalTriblerRecipe()
