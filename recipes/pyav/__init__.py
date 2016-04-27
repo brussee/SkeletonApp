@@ -6,8 +6,8 @@ class PyAVRecipe(PythonRecipe):
 
     version = 'master'
     url = 'https://github.com/mikeboers/PyAV/archive/{version}.zip'
-    depends = ['ffmpeg', 'python2']
-    #call_hostpython_via_targetpython = False
+    depends = ['ffmpeg', 'python2', 'setuptools']
+    call_hostpython_via_targetpython = False
     site_packages_name = 'av'
 
 
