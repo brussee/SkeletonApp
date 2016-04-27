@@ -21,7 +21,6 @@ class FFMpegRecipe(Recipe):
         # Clone master branch
         if not exists(build_dir):
             shprint(git, 'clone', 'https://github.com/WritingMinds/ffmpeg-android', build_dir)
-            return
             # Download submodules
             with current_directory(build_dir):
                 shprint(bash, 'init_update_libs.sh')
@@ -33,7 +32,6 @@ class FFMpegRecipe(Recipe):
     def build_arch(self, arch):
         super(FFMpegRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
-        return
         build_dir = self.get_build_dir(arch.arch)
         with current_directory(build_dir):
             bash = sh.Command('bash')
