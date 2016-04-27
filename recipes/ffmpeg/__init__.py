@@ -3,7 +3,8 @@ from os.path import join, exists
 import sh
 
 """
-FFmpeg for Android compiled with x264, libass, fontconfig, freetype, fribidi and lame (Supports Android 4.1+) http://writingminds.github.io/ffmpeg-android/
+FFmpeg for Android compiled with x264, libass, fontconfig, freetype, fribidi and lame (Supports Android 4.1+)
+http://writingminds.github.io/ffmpeg-android/
 """
 class FFMpegRecipe(Recipe):
 
@@ -16,21 +17,13 @@ class FFMpegRecipe(Recipe):
         return not exists(self.get_build_bin(arch))
 
 
-    def prebuild_arch(self, arch):
-        super(FFMpegRecipe, self).prebuild_arch(arch)
-        build_dir = self.get_build_dir(arch.arch)
-        # Download submodules
-        with current_directory(build_dir):
-            bash = sh.Command('bash')
-            shprint(bash, 'init_update_libs.sh')
-
-
     def build_arch(self, arch):
         super(FFMpegRecipe, self).build_arch(arch)
         env = self.get_recipe_env(arch)
         build_dir = self.get_build_dir(arch.arch)
         with current_directory(build_dir):
             bash = sh.Command('bash')
+            shprint(bash, 'init_update_libs.sh')
             shprint(bash, 'android_build.sh', _env=env)
 
 
