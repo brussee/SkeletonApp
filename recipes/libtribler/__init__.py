@@ -5,9 +5,9 @@ from sh import mkdir, cp
 class LibTriblerRecipe(PythonRecipe):
     version = 'working-copy'
     depends = ['android', 'apsw', 'cherrypy', 'cryptography', 'decorator',
-               'feedparser', 'libnacl', 'libsodium', 'libtorrent', 'm2crypto',
-               'netifaces', 'openssl', 'pyasn1', 'pil', 'pyleveldb', 'python2',
-               'requests', 'twisted', 'vlc']
+               'feedparser', 'ffmpeg', 'libnacl', 'libsodium', 'libtorrent',
+               'm2crypto', 'netifaces', 'openssl', 'pyasn1', 'pil', 'pyleveldb',
+               'python2', 'requests', 'twisted']
 
     def should_build(self, arch):
         # Overwrite old build
