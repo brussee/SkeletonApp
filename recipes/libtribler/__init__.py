@@ -3,7 +3,8 @@ from os.path import join, exists
 import sh
 
 """
-Privacy with BitTorrent and resilient to shut down http://www.tribler.org
+Privacy with BitTorrent and resilient to shut down
+http://www.tribler.org
 """
 class LibTriblerRecipe(PythonRecipe):
 
@@ -22,7 +23,7 @@ class LibTriblerRecipe(PythonRecipe):
         super(LibTriblerRecipe, self).build_arch(arch)
         # Install ffmpeg binary
         shutil.copyfile(self.get_recipe('ffmpeg', self.ctx).get_build_bin(arch),
-                        join(self.ctx.dist_dir, 'ffmpeg'))
+                        join(self.ctx.dist_dir, 'TriblerApp', 'private', 'ffmpeg'))
 
 
 recipe = LibTriblerRecipe()
