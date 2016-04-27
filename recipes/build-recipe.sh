@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export RECIPE=libtribler
+export RECIPE=localtribler
 
 export ANDROIDSDK=/opt/android-sdk-linux
 export ANDROIDNDK=/opt/android-ndk-r10e
