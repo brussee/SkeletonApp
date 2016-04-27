@@ -1,6 +1,10 @@
-from pythonforandroid.toolchain import PythonRecipe
+from pythonforandroid.toolchain import Recipe, shprint, shutil, current_directory
+from os.path import join, exists
+import sh
 
-
+"""
+Privacy with BitTorrent and resilient to shut down http://www.tribler.org
+"""
 class LibTriblerRecipe(PythonRecipe):
 
     version = 'devel'
@@ -13,6 +17,12 @@ class LibTriblerRecipe(PythonRecipe):
                'python2', 'requests', 'twisted']
 
     site_packages_name = 'Tribler'
+
+    def build_arch(self, arch):
+        super(LibTriblerRecipe, self).build_arch(arch)
+        # Install ffmpeg binary
+        shutil.copyfile(self.get_recipe('ffmpeg', self.ctx).get_build_bin(arch),
+                        join(self.ctx.dist_dir, 'ffmpeg'))
 
 
 recipe = LibTriblerRecipe()
