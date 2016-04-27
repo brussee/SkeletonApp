@@ -4,6 +4,7 @@ import sh
 
 """
 FFmpeg for Android compiled with x264, libass, fontconfig, freetype, fribidi and lame (Supports Android 4.1+)
+
 http://writingminds.github.io/ffmpeg-android/
 """
 class FFMpegRecipe(Recipe):
@@ -29,11 +30,7 @@ class FFMpegRecipe(Recipe):
 
     def get_build_bin(self, arch):
         build_dir = self.get_build_dir(arch.arch)
-        return join(build_dir, 'build', self.select_build_arch(arch), 'bin', 'ffmpeg')
-
-
-    def select_build_arch(self, arch):
-        return arch.arch.replace('armeabi', 'armeabi-v7a')
+        return join(build_dir, 'build', arch.arch, 'bin', 'ffmpeg')
 
 
     def get_recipe_env(self, arch):
