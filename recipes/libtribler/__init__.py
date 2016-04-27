@@ -4,6 +4,7 @@ import sh
 
 """
 Privacy with BitTorrent and resilient to shut down
+
 http://www.tribler.org
 """
 class LibTriblerRecipe(PythonRecipe):
@@ -19,8 +20,8 @@ class LibTriblerRecipe(PythonRecipe):
 
     site_packages_name = 'Tribler'
 
-    def build_arch(self, arch):
-        super(LibTriblerRecipe, self).build_arch(arch)
+    def postbuild_arch(self, arch):
+        super(LibTriblerRecipe, self).postbuild_arch(arch)
         # Install ffmpeg binary
         shutil.copyfile(self.get_recipe('ffmpeg', self.ctx).get_build_bin(arch),
                         join(self.ctx.dist_dir, 'TriblerApp', 'private', 'ffmpeg'))
