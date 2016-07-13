@@ -15,6 +15,7 @@ class TwistedRecipe(CythonRecipe):
     def prebuild_arch(self, arch):
         super(TwistedRecipe, self).prebuild_arch(arch)
         # TODO Need to whitelist tty.pyo and termios.so here
+        '''
         with current_directory(self.get_build_dir(arch.arch)):
             # Remove all tests
             sh.rm('-rf',
@@ -42,6 +43,7 @@ class TwistedRecipe(CythonRecipe):
                   'twisted/positioning/test',
                   'twisted/scripts/test'
             )
+        '''
 
     def get_recipe_env(self, arch):
         env = super(TwistedRecipe, self).get_recipe_env(arch)
