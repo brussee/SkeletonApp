@@ -9,8 +9,8 @@ http://writingminds.github.io/ffmpeg-android/
 """
 class FFMpegRecipe(Recipe):
 
-    version = 'master'
-    url = 'git+https://github.com/WritingMinds/ffmpeg-android.git'
+    version = 'libpng16'
+    url = 'git+https://github.com/brussee/ffmpeg-android.git'
     patches = ['settings.patch']
 
 
