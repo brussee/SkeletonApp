@@ -6,7 +6,7 @@ import sh
 from colorama import Fore, Style
 
 class VlcRecipe(Recipe):
-    version = '3.0.0'
+    version = '3.0.0-2.1.0'
     url = None
     name = 'vlc'
 
