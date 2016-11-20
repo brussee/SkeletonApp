@@ -1,22 +1,23 @@
-from pythonforandroid.toolchain import PythonRecipe, current_directory
+from os import getenv
 from os.path import join, exists
 from sh import mkdir, cp
+from pythonforandroid.toolchain import PythonRecipe, current_directory
 
 
-"""
-Privacy with BitTorrent and resilient to shut down
-
-http://www.tribler.org
-"""
 class LocalTriblerRecipe(PythonRecipe):
+    """
+    Privacy with BitTorrent and resilient to shut down
 
-    src_root = '/home/paul/repos/tribler-app'
+    http://www.tribler.org
+    """
+
+    src_root = getenv('WORKSPACE', '/home/paul/repos/tribler-app')
 
     version = 'local'
 
     depends = ['apsw', 'cryptography', 'libsodium', 'libtorrent', 'm2crypto',
                'netifaces', 'openssl', 'pil', 'pycrypto', 'pyleveldb', 'python2',
-               'setuptools', 'twisted', 'coverage',  # 'ffmpeg',
+               'setuptools', 'twisted', 'coverage', #'vlc',  #'ffmpeg',
               ]
 
     python_depends = ['chardet', 'cherrypy', 'configobj', 'decorator', 'feedparser',
